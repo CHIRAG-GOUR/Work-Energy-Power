@@ -1,0 +1,30 @@
+{
+  "name": "physics-work-energy-power",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node ./node_modules/vite/bin/vite.js",
+    "build": "node ./node_modules/vite/bin/vite.js build",
+    "preview": "node ./node_modules/vite/bin/vite.js preview"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.24.4",
+    "@babel/preset-env": "^7.24.4",
+    "@vitejs/plugin-react": "^4.7.0",
+    "glob": "^13.0.6",
+    "pug": "^3.0.2",
+    "vite": "^5.2.0",
+    "vite-plugin-pug": "^0.3.2"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.7.7",
+    "@react-three/fiber": "^9.5.0",
+    "cheerio": "^1.2.0",
+    "jsdom": "^29.0.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "react-router-dom": "^7.13.1",
+    "three": "^0.163.0"
+  }
+}
