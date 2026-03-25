@@ -11,16 +11,14 @@ const ChapterTwoThree = () => {
   }, []);
 
   return (
-    <div className="ui-grid fade-in" id="view-chapter-2.3">
-      <header className="glass-card header-card fade-in" style={{ animationDelay: '0.1s', gridColumn: '1 / -1', background: 'linear-gradient(135deg, #ffedd5, #fef3c7)', border: '2px solid #fbd38d' }}>
-        <div className="header-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <h2 style={{ color: '#ea580c', fontSize: '1.5rem', marginBottom: '0.5rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Module 2</h2>
-          <h1 className="bouncy-header" style={{ color: '#9a3412', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px' }}>
-             <span>Chapter</span> <span>3</span> <span>:</span> <span>Kinetic</span> <span>Energy</span>
-          </h1>
-          <p className="subtitle" style={{ textAlign: 'center', fontSize: '1.2rem', color: '#b45309', marginTop: '0.5rem', fontWeight: 'bold' }}>The Energy of Speed</p>
-        </div>
-      </header>
+    <div className="ui-grid" id="view-chapter-2.3">
+        <header className="glass-card banner-card fade-in" style={{ animationDelay: '0.1s', gridColumn: '1 / -1', textAlign: 'center', padding: '3rem 2rem', background: 'linear-gradient(135deg, #ffedd5, #fef3c7)', border: '2px solid #fbd38d' }}>
+            <span className="module-badge" style={{ display: 'inline-block', marginBottom: '1rem', fontSize: '1rem', background: '#ea580c', color: 'white', border: 'none' }}>Module 2</span>
+            <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', margin: '0 0 1rem 0', lineHeight: 1.2, color: '#9a3412' }}>Chapter 3: Kinetic Energy</h1>
+            <p className="subtitle" style={{ fontSize: '1.2rem', opacity: 0.9, maxWidth: '800px', margin: '0 auto', color: '#7c2d12' }}>
+                The Energy of Speed
+            </p>
+        </header>
 
       <article className="glass-card fade-in" style={{ animationDelay: '0.2s', gridColumn: '1 / -1', display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'center', background: 'linear-gradient(145deg, #fffbeb, #ffedd5)', border: '1px solid #fed7aa' }}>
         <div style={{ flex: '1 1 45%', minWidth: '300px' }}>
@@ -129,11 +127,19 @@ const ChapterTwoThree = () => {
       <article className="glass-card fade-in" style={{ animationDelay: '0.5s', gridColumn: '1 / -1', display: 'flex', flexWrap: 'wrap', gap: '2rem', background: 'linear-gradient(145deg, #fffbeb, #ccfbf1)', border: '1px solid #5eead4' }}>
         <div style={{ flex: '1 1 45%', minWidth: '300px' }}>
           <h2 style={{ fontSize: '2rem', color: '#0f766e', marginBottom: '1rem' }}>Interactive: Mass vs Kinetic Energy</h2>
-          <p style={{ color: '#115e59', fontSize: '1.05rem', lineHeight: '1.6' }}>Observe how changing the mass of a moving object affects its kinetic energy. Drop different mass blocks at the same speed and see the impact!</p>
+          <p style={{ color: '#115e59', fontSize: '1.05rem', lineHeight: '1.6' }}>Adjust the mass to see how kinetic energy scales linearly. Doubling the mass doubles the KE.</p>
         </div>
-        <div style={{ flex: '1 1 45%', minWidth: '300px', background: '#000', borderRadius: '1.5rem', overflow: 'hidden', minHeight: '300px', position: 'relative' }}>
-          <canvas id="sim9-canvas" style={{ width: '100%', height: '100%', display: 'block' }}></canvas>
-          <div style={{ position: 'absolute', top: '10px', left: '10px', background: 'rgba(255,255,255,0.7)', padding: '4px 10px', borderRadius: '8px', fontSize: '0.9rem', fontWeight: 'bold' }}>Sim: Mass & Energy</div>
+        <div id="sim9-canvas" style={{ flex: '1 1 45%', minWidth: '300px', background: 'rgba(248,250,252,0.5)', borderRadius: '1.5rem', overflow: 'hidden', minHeight: '300px', position: 'relative' }}>
+        </div>
+      </article>
+
+      {/* Activity 2 (Simulation 10) */}
+      <article className="glass-card fade-in" style={{ animationDelay: '0.6s', gridColumn: '1 / -1', display: 'flex', flexWrap: 'wrap', gap: '2rem', background: 'linear-gradient(145deg, #fdf4ff, #fae8ff)', border: '1px solid #f0abfc' }}>
+        <div style={{ flex: '1 1 45%', minWidth: '300px' }}>
+          <h2 style={{ fontSize: '2rem', color: '#86198f', marginBottom: '1rem' }}>Interactive: Velocity vs Kinetic Energy</h2>
+          <p style={{ color: '#701a75', fontSize: '1.05rem', lineHeight: '1.6' }}>Adjust the velocity to see the parabolic curve! Because velocity is squared in the formula, doubling velocity quadruples the Kinetic Energy.</p>
+        </div>
+        <div id="sim10-canvas" style={{ flex: '1 1 45%', minWidth: '300px', background: 'rgba(248,250,252,0.5)', borderRadius: '1.5rem', overflow: 'hidden', minHeight: '300px', position: 'relative' }}>
         </div>
       </article>
 

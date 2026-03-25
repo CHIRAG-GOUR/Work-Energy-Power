@@ -1,24 +1,23 @@
 import React, { useEffect } from 'react';
-import { initSim5, initSim6 } from '../lib/simulations';
+import SimCricket3D from '../components/SimCricket3D';
+import SimHammer3D from '../components/SimHammer3D';
 
 const PREFIX = 'https://login.skillizee.io';
 
 const ChapterTwoOne = () => {
   useEffect(() => {
-    initSim5();
-    initSim6();
+    // Legacy sim cleanups
   }, []);
 
   return (
-    <div className="ui-grid fade-in" id="view-chapter-2.1">
-      <header className="glass-card header-card fade-in" style={{ animationDelay: '0.1s', gridColumn: '1 / -1', background: 'linear-gradient(135deg, #ffedd5, #fef3c7)', border: '2px solid #fbd38d' }}>
-        <div className="header-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <h2 style={{ color: '#ea580c', fontSize: '1.5rem', marginBottom: '0.5rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Module 2</h2>
-          <h1 className="bouncy-header" style={{ color: '#9a3412', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px' }}>
-             <span>Chapter</span> <span>1</span> <span>:</span> <span>Energy</span>
-          </h1>
-        </div>
-      </header>
+    <div className="ui-grid" id="view-chapter-2.1">
+        <header className="glass-card banner-card fade-in" style={{ animationDelay: '0.1s', gridColumn: '1 / -1', textAlign: 'center', padding: '3rem 2rem', background: 'linear-gradient(135deg, #ffedd5, #fef3c7)', border: '2px solid #fbd38d' }}>
+            <span className="module-badge" style={{ display: 'inline-block', marginBottom: '1rem', fontSize: '1rem', background: '#ea580c', color: 'white', border: 'none' }}>Module 2</span>
+            <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', margin: '0 0 1rem 0', lineHeight: 1.2, color: '#9a3412' }}>Chapter 1: Energy</h1>
+            <p className="subtitle" style={{ fontSize: '1.2rem', opacity: 0.9, maxWidth: '800px', margin: '0 auto', color: '#7c2d12' }}>
+                The capacity to do work
+            </p>
+        </header>
 
       <article className="glass-card fade-in" style={{ animationDelay: '0.2s', gridColumn: '1 / -1', display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'center', background: 'linear-gradient(145deg, #ffffff, #fff7ed)', border: '1px solid #fed7aa' }}>
         <div style={{ flex: '1 1 45%', minWidth: '300px' }}>
@@ -45,19 +44,8 @@ const ChapterTwoOne = () => {
 
       <article className="glass-card fade-in" style={{ gridColumn: '1 / -1', background: '#fff7ed', border: '2px solid #fdba74', padding: '1.5rem', marginTop: '1rem', borderRadius: '24px' }}>
           <h3 style={{ color: '#c2410c', textAlign: 'center', marginBottom: '1rem', fontSize: '1.8rem' }}>Interactive: The Energy Handshake (Cricket)</h3>
-          <div style={{ position: 'relative', width: '100%', height: '450px', borderRadius: '16px', overflow: 'hidden', background: '#ffedd5', boxShadow: 'inset 0 4px 10px rgba(0,0,0,0.05)' }}>
-            <canvas id="sim5-canvas" style={{ width: '100%', height: '100%', display: 'block' }}></canvas>
-            
-            <div style={{ position: 'absolute', bottom: '20px', left: '0', right: '0', display: 'flex', justifyContent: 'center', gap: '1rem' }}>
-               <button id="sim5-btn-bowl" className="interactive-btn" style={{ background: '#ea580c', color: 'white', padding: '12px 30px', borderRadius: '30px', fontWeight: 'bold', fontSize: '1.2rem', boxShadow: '0 4px 0 #9a3412', border: 'none', cursor: 'pointer', transition: 'all 0.2s' }}>Bowl Ball</button>
-               <button id="sim5-btn-reset" className="interactive-btn" style={{ background: '#64748b', color: 'white', padding: '12px 30px', borderRadius: '30px', fontWeight: 'bold', fontSize: '1.2rem', boxShadow: '0 4px 0 #475569', border: 'none', cursor: 'pointer', transition: 'all 0.2s' }}>Reset</button>
-            </div>
-            
-            <div style={{ position: 'absolute', top: '20px', right: '20px', background: 'rgba(255,255,255,0.95)', padding: '15px 25px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.1)', border: '2px solid #fdba74' }}>
-               <div style={{ marginBottom: '8px', color: '#b91c1c', fontWeight: 'bold', fontSize: '1.1rem' }}>Ball Energy: <span id="sim5-stat-balle">0 J</span></div>
-               <div style={{ color: '#b45309', fontWeight: 'bold', fontSize: '1.1rem' }}>Wicket Energy: <span id="sim5-stat-wickete">0 J</span></div>
-            </div>
-          </div>
+          <p style={{ textAlign: 'center', color: '#9a3412', marginBottom: '1rem' }}>Click "Bowl" to throw the 3D ball! Adjust speed with the slider to see how Kinetic Energy affects the impact on the wickets.</p>
+          <SimCricket3D />
       </article>
 
       <article className="glass-card fade-in" style={{ animationDelay: '0.3s', gridColumn: '1 / -1', display: 'flex', flexWrap: 'wrap-reverse', gap: '2rem', alignItems: 'center', background: 'linear-gradient(145deg, #fffbeb, #ffffff)', border: '1px solid #fde68a' }}>
@@ -106,19 +94,9 @@ const ChapterTwoOne = () => {
       </article>
 
       <article className="glass-card fade-in" style={{ gridColumn: '1 / -1', background: '#fff1f2', border: '2px solid #fda4af', padding: '1.5rem', marginTop: '1rem', borderRadius: '24px' }}>
-          <h3 style={{ color: '#be123c', textAlign: 'center', marginBottom: '1rem', fontSize: '1.8rem' }}>Interactive: Potential to Kinetic Energy</h3>
-          <div style={{ position: 'relative', width: '100%', height: '450px', borderRadius: '16px', overflow: 'hidden', background: '#ffe4e6', boxShadow: 'inset 0 4px 10px rgba(0,0,0,0.05)' }}>
-            <canvas id="sim6-canvas" style={{ width: '100%', height: '100%', display: 'block' }}></canvas>
-            
-            <div style={{ position: 'absolute', bottom: '20px', left: '0', right: '0', display: 'flex', justifyContent: 'center', gap: '1rem' }}>
-               <button id="sim6-btn-drop" className="interactive-btn" style={{ background: '#e11d48', color: 'white', padding: '12px 30px', borderRadius: '30px', fontWeight: 'bold', fontSize: '1.2rem', boxShadow: '0 4px 0 #9f1239', border: 'none', cursor: 'pointer', transition: 'all 0.2s' }}>Drop Hammer</button>
-               <button id="sim6-btn-reset" className="interactive-btn" style={{ background: '#64748b', color: 'white', padding: '12px 30px', borderRadius: '30px', fontWeight: 'bold', fontSize: '1.2rem', boxShadow: '0 4px 0 #475569', border: 'none', cursor: 'pointer', transition: 'all 0.2s' }}>Reset Platform</button>
-            </div>
-            
-            <div style={{ position: 'absolute', top: '20px', left: '20px', background: 'rgba(255,255,255,0.95)', padding: '15px 25px', borderRadius: '16px', boxShadow: '0 4px 15px rgba(0,0,0,0.1)', border: '2px solid #fda4af' }}>
-               <div style={{ color: '#be123c', fontWeight: 'bold', fontSize: '1.1rem' }}>Status: <span id="sim6-stat-energy">100% Potential Energy (Stored)</span></div>
-            </div>
-          </div>
+          <h3 style={{ color: '#be123c', textAlign: 'center', marginBottom: '1rem', fontSize: '1.8rem' }}>Interactive: Hammer & Nail (PE → KE → Work)</h3>
+          <p style={{ textAlign: 'center', color: '#9f1239', marginBottom: '1rem' }}>Click to drop the 3D hammer! Adjust height with the slider. Higher drop = more PE = deeper nail.</p>
+          <SimHammer3D />
       </article>
 
       <div style={{ gridColumn: '1 / -1', display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>

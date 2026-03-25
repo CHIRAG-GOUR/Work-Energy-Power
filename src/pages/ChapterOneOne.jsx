@@ -1,13 +1,265 @@
-
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import CustomVideoPlayer from '../components/CustomVideoPlayer';
-// from 'react';
-import { useNavigate } from 'react-router-dom';
+import SimPushWall3D from '../components/SimPushWall3D';
 
 export default function ChapterOneOne() {
-    const navigate = useNavigate();
+    
+    // Sim 1 State
+    const [force, setForce] = useState(50);
+    const [displacement, setDisplacement] = useState(5);
+    
+    // Sim 2 State (Wall Push vs Pebble)
+    const [pushClicks, setPushClicks] = useState(0);
+    const [wallStamina, setWallStamina] = useState(100);
+    const [isPushing, setIsPushing] = useState(false);
+    const [targetType, setTargetType] = useState('wall'); // 'wall' or 'pebble'
+    const [pebblePosition, setPebblePosition] = useState(0);
+
+    // Drain stamina continuously if not clicking
+    useEffect(() => {
+        let timer;
+        if (wallStamina < 100 && !isPushing) {
+            timer = setInterval(() => {
+                setWallStamina(prev => Math.min(100, prev + 5));
+            }, 500);
+        }
+        return () => clearInterval(timer);
+    }, [wallStamina, isPushing]);
+
+    const handlePush = () => {
+        setIsPushing(true);
+        setPushClicks(c => c + 1);
+        
+        if (wallStamina > 0) {
+            setWallStamina(s => Math.max(0, s - 5));
+        }
+
+        if (targetType === 'pebble' && wallStamina > 0) {
+            setPebblePosition(p => Math.min(150, p + 5));
+        }
+
+        setTimeout(() => setIsPushing(false), 150);
+    };
+    
     return (
-        <div className="ui-grid" id="view-chapter-1.1"><header className="glass-card header-card fade-in" style={{ animationDelay: '0.1s', gridColumn: '1 / -1' }}><div className="header-content"><span className="module-badge">Module 1</span><h1 className="bouncy-header"><span className="char" style={{ animationDelay: '0.20s' }}>W</span><span className="char" style={{ animationDelay: '0.25s' }}>o</span><span className="char" style={{ animationDelay: '0.30s' }}>r</span><span className="char" style={{ animationDelay: '0.35s' }}>k</span><span className="char" style={{ animationDelay: '0.40s' }}>,</span><span className="char" style={{ animationDelay: '0.45s' }}></span><span className="char" style={{ animationDelay: '0.50s' }}>E</span><span className="char" style={{ animationDelay: '0.55s' }}>n</span><span className="char" style={{ animationDelay: '0.60s' }}>e</span><span className="char" style={{ animationDelay: '0.65s' }}>r</span><span className="char" style={{ animationDelay: '0.70s' }}>g</span><span className="char" style={{ animationDelay: '0.75s' }}>y</span><span className="char" style={{ animationDelay: '0.80s' }}></span><span className="char" style={{ animationDelay: '0.85s' }}>&</span><span className="char" style={{ animationDelay: '0.90s' }}></span><span className="char" style={{ animationDelay: '0.95s' }}>P</span><span className="char" style={{ animationDelay: '1.00s' }}>o</span><span className="char" style={{ animationDelay: '1.05s' }}>w</span><span className="char" style={{ animationDelay: '1.10s' }}>e</span><span className="char" style={{ animationDelay: '1.15s' }}>r</span></h1><p>Physics Experiential Activity</p></div></header><div className="glass-card banner-card fade-in" style={{ animationDelay: '0.2s', gridColumn: '1 / -1' }}><h2>Chapter 1: The Basics</h2><p className="subtitle">Whether it is a heartbeat or a heavy-duty engine, nothing moves without a transfer of energy. We can break this down into three core pillars:</p></div><article className="glass-card highlight-card fade-in" style={{ animationDelay: '0.3s' }}><div className="icon-circle">W</div><h3>Work</h3><p>The result of a force acting upon an object to cause a displacement. In simple terms, if nothing moves, no "work" is done in the eyes of physics.</p></article><article className="glass-card highlight-card fade-in" style={{ animationDelay: '0.4s' }}><div className="icon-circle" style={{ background: 'linear-gradient(135deg, #ff9f43, #ff7f50)' }}>E</div><h3>Energy</h3><p>The "currency" of the universe. It is the capacity to do work. Without it, life processes stall and machines sit idle.</p></article><article className="glass-card highlight-card fade-in" style={{ animationDelay: '0.5s' }}><div className="icon-circle" style={{ background: 'linear-gradient(135deg, #ee5253, #ff6b6b)' }}>P</div><h3>Power</h3><p>The rate at which work is done. It is not just about if you can move a load, but how fast you can do it.</p></article><article className="glass-card fade-in" style={{ animationDelay: '0.6s', gridColumn: '1 / -1' }}><div className="content-grid-half"><div className="text-side"><h2>The Universal Need for Energy</h2><p>Everything that "functions" requires a source of input to overcome entropy and perform tasks:</p><div className="table-responsive"><table className="glass-table"><thead><tr><th>Entity</th><th>Primary Activities</th><th>Fuel Source</th></tr></thead><tbody><tr><td><strong>Living Beings</strong></td><td>Life processes, running, thinking, survival.</td><td>Food (Chemical Energy)</td></tr><tr><td><strong>Animals</strong></td><td>Hunting, fleeing, manual labor.</td><td>Food/Biomass</td></tr><tr><td><strong>Machines</strong></td><td>Lifting, transporting, manufacturing.</td><td>Fuel/Electricity</td></tr></tbody></table></div></div><div className="info-block"><h3>Why the Fuel?</h3><p>Engines and organisms are essentially energy converters. A diesel engine burns fuel to create thermal energy, which then converts into mechanical work. Similarly, your body breaks down molecular bonds in food to power your muscles and neurons.</p><p className="highlight-text"><strong>In short: Energy is the capacity; Work is the action.</strong></p></div></div></article><div className="side-by-side-cards"><article className="glass-card fade-in" style={{ animationDelay: '0.7s' }}><h2>Work: What is work?</h2><div className="video-container" style={{ marginBottom: '1.5rem', borderRadius: '16px', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}><CustomVideoPlayer src="/videos/zacescdatjg.mp4" title="Work and Energy: Definition of Work in Physics" /></div><p>There is a difference in the way we use the term "work" in day-to-day life and the way we use it in science. The classic "clash" between everyday language and scientific precision. In our daily lives, "work" is a synonym for effort; in physics, "work" is a strictly defined result.</p><div className="info-block"><h3>The Physics Definition</h3><p>In science, work is not about how tired you feel; it is about the transfer of energy via a force. For work to be done, two criteria must be met:</p><ol><li>A <strong>Force</strong> must act on the object.</li><li>The object must be <strong>Displaced</strong> (move) in the direction of that force.</li></ol></div></article><article className="glass-card fade-in" style={{ animationDelay: '0.8s' }}><h2>The "Hard Work" vs "No Work" Paradox</h2><p>Using these examples, we can categorize activities to see why someone pushing a rock might be exhausted but technically "unproductive" in a physics sense:</p><div className="table-responsive"><table className="glass-table"><thead><tr><th>Activity</th><th>Effort</th><th>Work (Science)</th><th>Why?</th></tr></thead><tbody><tr><td>Reads a book</td><td>Very High</td><td><span className="badge badge-danger">Zero</span></td><td>No physical displacement occurs.</td></tr><tr><td>Pushing a Wall</td><td>Exhausting</td><td><span className="badge badge-danger">Zero</span></td><td>The displacement ($s$) is zero.</td></tr><tr><td>Holding Heavy Load</td><td>Tiring</td><td><span className="badge badge-danger">Zero</span></td><td>Force exerted, but no movement.</td></tr><tr><td>Climbing Stairs</td><td>High</td><td><span className="badge badge-success">High</span></td><td>Force exerted to move body weight.</td></tr></tbody></table></div></article><article className="glass-card fade-in" style={{ animationDelay: '0.85s', gridColumn: '1 / -1', marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1.5rem' }}><div className="info-block"><h3>Why do we feel tired if no "work" is done?</h3><p>Even standing still holding a box, your body consumes energy because your muscle fibers constantly contract and relax to maintain posture against gravity.</p><p>So, while doing internal biological work (chemical to heat energy), you do zero mechanical work on the box because it isn't moving.</p></div><div className="key-takeaway" style={{ marginTop: '0' }}><strong>Key Takeaway:</strong> If there is no movement, there is no work. Physics is indifferent to your sweat unless something actually moves.
-          </div></article><article className="glass-card fade-in" style={{ animationDelay: '0.9s', gridColumn: '1 / -1', marginTop: '1rem' }}><h2>Interactive Mod 1: Calculate Work</h2><p>Push the box! Adjust the <strong>Force</strong> and <strong>Displacement</strong> to see how much mechanical work is done across the floor.</p><div className="simulation-container"><div className="sim-controls"><label><strong>Applied Force:</strong><span id="force-val">50</span> Newtons</label><input type="range" id="force-slider" min="0" max="100" value="50" /><label><strong>Displacement:</strong><span id="dist-val">5</span> Meters</label><input type="range" id="dist-slider" min="0" max="20" value="5" /></div><div className="sim-visual"><div id="sim-box" className="sim-box">??</div><div className="sim-ground"></div></div><div className="sim-result"><h3>Work Done = <span id="work-result">250</span> Joules</h3></div></div></article></div>
+        <div className="ui-grid" id="view-chapter-1.1">
+            <header className="glass-card banner-card fade-in" style={{ animationDelay: '0.1s', gridColumn: '1 / -1', textAlign: 'center', padding: '3rem 2rem' }}>
+                <span className="module-badge" style={{ display: 'inline-block', marginBottom: '1rem', fontSize: '1rem' }}>Module 1</span>
+                <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', margin: '0 0 1rem 0', lineHeight: 1.2 }}>Chapter 1: The Basics (Work)</h1>
+                <p className="subtitle" style={{ fontSize: '1.2rem', opacity: 0.9, maxWidth: '800px', margin: '0 auto' }}>
+                    Physics Experiential Activity. Whether it is a heartbeat or a heavy-duty engine, nothing moves without a transfer of energy. We can break this down into three core pillars:
+                </p>
+            </header>
+
+            <article className="glass-card highlight-card fade-in" style={{ animationDelay: '0.3s' }}>
+                <div className="icon-circle">W</div>
+                <h3>Work</h3>
+                <p>The result of a force acting upon an object to cause a displacement. In simple terms, if nothing moves, no "work" is done in the eyes of physics.</p>
+            </article>
+            <article className="glass-card highlight-card fade-in" style={{ animationDelay: '0.4s' }}>
+                <div className="icon-circle" style={{ background: 'linear-gradient(135deg, #ff9f43, #ff7f50)' }}>E</div>
+                <h3>Energy</h3>
+                <p>The "currency" of the universe. It is the capacity to do work. Without it, life processes stall and machines sit idle.</p>
+            </article>
+            <article className="glass-card highlight-card fade-in" style={{ animationDelay: '0.5s' }}>
+                <div className="icon-circle" style={{ background: 'linear-gradient(135deg, #ee5253, #ff6b6b)' }}>P</div>
+                <h3>Power</h3>
+                <p>The rate at which work is done. It is not just about if you can move a load, but how fast you can do it.</p>
+            </article>
+
+            <article className="glass-card fade-in" style={{ animationDelay: '0.6s', gridColumn: '1 / -1' }}>
+                <div className="content-grid-half">
+                    <div className="text-side">
+                        <h2>The Universal Need for Energy</h2>
+                        <p>Everything that "functions" requires a source of input to overcome entropy and perform tasks:</p>
+                        <div className="table-responsive">
+                            <table className="glass-table">
+                                <thead>
+                                    <tr><th>Entity</th><th>Primary Activities</th><th>Fuel Source</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><strong>Living Beings</strong></td><td>Life processes, running, thinking, survival.</td><td>Food (Chemical Energy)</td></tr>
+                                    <tr><td><strong>Animals</strong></td><td>Hunting, fleeing, manual labor.</td><td>Food/Biomass</td></tr>
+                                    <tr><td><strong>Machines</strong></td><td>Lifting, transporting, manufacturing.</td><td>Fuel/Electricity</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <div className="side-by-side-cards" style={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: '2rem' }}>
+                <article className="glass-card fade-in" style={{ animationDelay: '0.7s' }}>
+                    <h2>Work: What is work?</h2>
+                    <div className="video-container" style={{ marginBottom: '1.5rem', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 10px 30px rgba(0,0,0,0.2)' }}>
+                        <CustomVideoPlayer src="/videos/zacescdatjg.mp4" title="Work and Energy: Definition of Work in Physics" />
+                    </div>
+                    <div className="info-block">
+                        <h3>The Physics Definition</h3>
+                        <p>In science, work is about the transfer of energy via a force. Two criteria must be met:</p>
+                        <ol>
+                            <li>A <strong>Force</strong> must act on the object.</li>
+                            <li>The object must be <strong>Displaced</strong> (move) in the direction of that force.</li>
+                        </ol>
+                    </div>
+                </article>
+
+                <article className="glass-card fade-in" style={{ animationDelay: '0.8s' }}>
+                    <h2 style={{ textAlign: 'center' }}>The "Hard Work" vs "No Work" Paradox</h2>
+                    <div className="table-responsive" style={{ maxWidth: '700px', margin: '0 auto' }}>
+                        <table className="glass-table" style={{ fontSize: '0.9rem' }}>
+                            <thead>
+                                <tr><th>Activity</th><th>Effort</th><th>Work (Science)</th><th>Why?</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>Reads a book</td><td>Very High</td><td><span className="badge" style={{background:'#fca5a5', color:'white', padding:'2px 6px', borderRadius:'4px' }}>Zero</span></td><td>No movement.</td></tr>
+                                <tr><td>Pushing Wall</td><td>Exhausting</td><td><span className="badge" style={{background:'#fca5a5', color:'white', padding:'2px 6px', borderRadius:'4px' }}>Zero</span></td><td>Displacement = 0</td></tr>
+                                <tr><td>Holding Load</td><td>Tiring</td><td><span className="badge" style={{background:'#fca5a5', color:'white', padding:'2px 6px', borderRadius:'4px' }}>Zero</span></td><td>Displacement = 0</td></tr>
+                                <tr><td>Climbing Stairs</td><td>High</td><td><span className="badge" style={{background:'#86efac', color:'white', padding:'2px 6px', borderRadius:'4px' }}>High</span></td><td>Movement against gravity</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div className="info-block" style={{ marginTop: '1.5rem' }}>
+                        <h3>Why do we feel tired if no "work" is done?</h3>
+                        <p>Your muscles consume energy constantly contracting just to maintain posture, but if there's no movement out in the world, purely mechanical work is ZERO.</p>
+                    </div>
+                </article>
             </div>
-);}
+
+            {/* REAL INTERACTIVE SIMULATIONS */}
+            <div className="side-by-side-cards" style={{ gridColumn: '1 / -1', display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: '2rem', marginTop: '2rem' }}>
+                <article className="glass-card fade-in" style={{ animationDelay: '0.9s', background: 'linear-gradient(to right bottom, #f0fdfa, #ecfdf5)', border: '4px solid #34d399' }}>
+                    <h2><span style={{ fontSize: '1.5rem', marginRight: '10px' }}>📦</span> Interactive Mod: Calculate Work</h2>
+                    <p>Slide the controls to define force and movement. See the live math in action!</p>
+                    <div className="simulation-container">
+                        <div className="sim-controls">
+                            <label style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <strong>Force (F):</strong> <span><span style={{color: '#ef4444', fontWeight: 'bold'}}>{force}</span> N</span>
+                            </label>
+                            <input type="range" min="0" max="100" value={force} onChange={e => setForce(Number(e.target.value))} style={{accentColor: '#ef4444', height: '8px'}} />
+                            
+                            <label style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+                                <strong>Displacement (s):</strong> <span><span style={{color: '#3b82f6', fontWeight: 'bold'}}>{displacement}</span> m</span>
+                            </label>
+                            <input type="range" min="0" max="20" value={displacement} onChange={e => setDisplacement(Number(e.target.value))} style={{accentColor: '#3b82f6', height: '8px'}} />
+                        </div>
+                        <div className="sim-visual" style={{ height: '120px', borderRadius: '1rem', background: '#e2e8f0', position: 'relative', marginTop: '1.5rem', border: 'inset 4px #cbd5e1' }}>
+                            {/* The Grid/Floor */}
+                            <div style={{ position: 'absolute', bottom: '0', left: '0', width: '100%', height: '20px', borderTop: '2px solid #94a3b8', backgroundImage: 'repeating-linear-gradient(90deg, #94a3b8 0 2px, transparent 2px 20px)' }}></div>
+                            
+                            {/* The Box */}
+                            <div style={{ 
+                                position: 'absolute', 
+                                bottom: '20px', 
+                                left: `calc(${(displacement / 20) * 80}%)`, // 0 to 80% to keep box in bounds
+                                transition: 'left 0.3s ease-out',
+                                width: '50px', height: '50px', 
+                                background: '#f59e0b', borderRadius: '8px', 
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                boxShadow: '4px 4px 0 rgba(0,0,0,0.1)', border: '2px solid #b45309'
+                            }}>📦</div>
+                            
+                            {/* Arrow showing Force */}
+                            {force > 0 && displacement > 0 && (
+                                <div style={{ 
+                                    position: 'absolute', bottom: '40px', 
+                                    left: '25px', // Start at box
+                                    width: `${wallStamina}%`,
+                                    height: '4px', background: '#ef4444', 
+                                    transition: 'width 0.3s ease-out', zIndex: 0 
+                                }}>
+                                    <div style={{ position:'absolute', right:'-5px', top:'-6px', width:'0', height:'0', borderTop:'8px solid transparent', borderBottom:'8px solid transparent', borderLeft:'12px solid #ef4444' }}></div>
+                                    <div style={{ position:'absolute', top:'-25px', left:'50%', transform:'translateX(-50%)', fontWeight:'bold', color:'#ef4444' }}>Force</div>
+                                </div>
+                            )}
+                        </div>
+                        <div className="sim-result" style={{ background: '#34d399', color: 'white', borderRadius: '1rem', marginTop: '1.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '1rem' }}>
+                            <div style={{ fontSize: '1.2rem', textAlign: 'right' }}>
+                                 W = F × s<br />
+                                 {force} × {displacement}
+                            </div>
+                            <h3 style={{ fontSize: '2rem', borderLeft: '2px solid rgba(255,255,255,0.5)', paddingLeft: '1rem', color:'white' }}>
+                                = {force * displacement} J
+                            </h3>
+                        </div>
+                    </div>
+                </article>
+
+                <article className="glass-card fade-in" style={{ animationDelay: '1.0s', background: 'linear-gradient(to right bottom, #fef2f2, #fff1f2)', border: '4px solid #ef4444' }}>
+                    <h2><span style={{ fontSize: '1.5rem', marginRight: '10px' }}>🧱</span> Experiential Activity: Push It!</h2>
+                    <p>Try pushing the heavy wall versus a small pebble. Notice how work is ONLY done when there is <em>displacement</em>!</p>
+                    
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginBottom: '1rem' }}>
+                        <button 
+                            onClick={() => { setTargetType('wall'); setPushClicks(0); setWallStamina(100); }}
+                            style={{ padding: '0.8rem 1.5rem', borderRadius: '1rem', background: targetType === 'wall' ? '#ef4444' : '#f87171', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 'bold', borderBottom: targetType === 'wall' ? 'none' : '4px solid #b91c1c', transform: targetType === 'wall' ? 'translateY(4px)' : 'none' }}
+                        >Push Wall 🧱</button>
+                        <button 
+                            onClick={() => { setTargetType('pebble'); setPushClicks(0); setWallStamina(100); setPebblePosition(0); }}
+                            style={{ padding: '0.8rem 1.5rem', borderRadius: '1rem', background: targetType === 'pebble' ? '#3b82f6' : '#60a5fa', color: 'white', border: 'none', cursor: 'pointer', fontWeight: 'bold', borderBottom: targetType === 'pebble' ? 'none' : '4px solid #1d4ed8', transform: targetType === 'pebble' ? 'translateY(4px)' : 'none' }}
+                        >Push Pebble 🪨</button>
+                    </div>
+
+                    <div style={{ textAlign: 'center', padding: '1rem 0' }}>
+                        
+                        {/* 3D React Three Fiber Simulation */}
+                        <div style={{ marginBottom: '1.5rem' }}>
+                            <SimPushWall3D 
+                                targetType={targetType} 
+                                isPushing={isPushing} 
+                                pebblePosition={pebblePosition} 
+                                wallStamina={wallStamina} 
+                            />
+                        </div>
+
+                        {/* Stamina Bar */}
+                        <div style={{ width: '100%', background: '#fee2e2', borderRadius: '20px', height: '24px', overflow: 'hidden', border: '2px solid #fca5a5', marginBottom: '1rem' }}>
+                            <div style={{ width: `${wallStamina}%`, background: wallStamina > 30 ? '#4ade80' : '#ef4444', height: '100%', transition: 'width 0.2s, background 0.2s', display: 'flex', alignItems: 'center', justifyContent:'center', color: 'white', fontWeight: 'bold', fontSize:'0.8rem' }}>
+                                Stamina {wallStamina}%
+                            </div>
+                        </div>
+
+                        <button 
+                            className="sim-btn" 
+                            onClick={handlePush}
+                            disabled={wallStamina === 0 && targetType === 'wall'}
+                            style={{ padding: '1rem 3rem', fontSize: '1.5rem', borderRadius: '2rem', background: targetType === 'wall' ? '#ef4444' : '#3b82f6', color: 'white', cursor: (wallStamina === 0 && targetType === 'wall') ? 'not-allowed' : 'pointer', fontWeight: 'bold', boxShadow: `0 8px 0 ${targetType === 'wall' ? '#b91c1c' : '#1d4ed8'}`, border: 'none', transition: 'transform 0.1s' }}
+                            onMouseDown={e => {if(wallStamina > 0) e.currentTarget.style.transform = 'translateY(8px)'}}
+                            onMouseUp={e => {if(wallStamina > 0) e.currentTarget.style.transform = 'translateY(0px)'}}
+                        >
+                            PUSH! {pushClicks > 0 && `(${pushClicks})`}
+                        </button>
+                    </div>
+
+                    {/* Result Block */}
+                    <div style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '1rem', border: '2px dashed #94a3b8', textAlign: 'center', marginTop: '1rem' }}>
+                        {pushClicks === 0 ? (
+                            <p style={{ margin: 0, fontWeight: 'bold', color: '#64748b', fontSize: '1.2rem' }}>Start pushing!</p>
+                        ) : targetType === 'wall' ? (
+                            wallStamina > 20 ? (
+                                <p style={{ margin: 0, fontWeight: 'bold', color: '#f59e0b', fontSize: '1.2rem' }}>Keep Pushing! You're working up a sweat!</p>
+                            ) : (
+                                <div className="fade-in">
+                                    <h3 style={{ color: '#ef4444', marginBottom: '0.5rem' }}>Exhausted! But wait...</h3>
+                                    <p style={{ fontSize: '1.2rem', marginBottom: '0' }}>Displacement (s) = <strong>0 meters!</strong></p>
+                                    <div style={{ background: '#fee2e2', padding: '0.5rem', borderRadius: '8px', display: 'inline-block', marginTop: '0.5rem' }}>
+                                        <p style={{ margin: 0, fontSize: '1.3rem', color: '#b91c1c', fontWeight: 'bold' }}>Work = F &times; 0 = 0 Joules!</p>
+                                    </div>
+                                    <p style={{ fontSize: '1rem', color: '#64748b', marginTop: '0.5rem' }}>Even though you used energy, no physics work was done because the wall didn't move.</p>
+                                </div>
+                            )
+                        ) : (
+                            <div className="fade-in">
+                                <h3 style={{ color: '#10b981', marginBottom: '0.5rem' }}>Great job! The pebble is moving!</h3>
+                                <p style={{ fontSize: '1.2rem', marginBottom: '0' }}>Displacement (s) = <strong>{(pebblePosition * 0.1).toFixed(1)} meters!</strong></p>
+                                <div style={{ background: '#dcfce7', padding: '0.5rem', borderRadius: '8px', display: 'inline-block', marginTop: '0.5rem' }}>
+                                    <p style={{ margin: 0, fontSize: '1.3rem', color: '#15803d', fontWeight: 'bold' }}>Work = F &times; {(pebblePosition * 0.1).toFixed(1)} &gt; 0 Joules!</p>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </article>
+            </div>
+        </div>
+    );
+}

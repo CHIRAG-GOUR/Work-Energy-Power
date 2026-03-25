@@ -1,110 +1,144 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import CustomVideoPlayer from '../components/CustomVideoPlayer';
+import SimSlingshot3D from '../components/SimSlingshot3D';
+export default function ChapterTwoFour() {
 
-const PREFIX = 'https://login.skillizee.io';
+    // PEg State
+    const [mass, setMass] = useState(10); // kg
+    const [height, setHeight] = useState(5); // m
+    const g = 9.8;
+    const PEg = mass * g * height;
 
-const ChapterTwoFour = () => {
-  return (
-    <div className="ui-grid fade-in" id="view-chapter-2.4">
-      <header className="glass-card header-card fade-in" style={{ animationDelay: '0.1s', gridColumn: '1 / -1', background: 'linear-gradient(135deg, #ffedd5, #fef3c7)', border: '2px solid #fbd38d' }}>
-        <div className="header-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <h2 style={{ color: '#ea580c', fontSize: '1.5rem', marginBottom: '0.5rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Module 2</h2>
-          <h1 className="bouncy-header" style={{ color: '#9a3412', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px' }}>
-             <span>Chapter</span> <span>2.4</span> <span>:</span> <span>Potential</span> <span>Energy</span>
-          </h1>
-          <p className="subtitle" style={{ textAlign: 'center', fontSize: '1.2rem', color: '#b45309', marginTop: '0.5rem', fontWeight: 'bold' }}>The "Waiting" Energy</p>
-        </div>
-      </header>
+    // PEe State
+    const [stretch, setStretch] = useState(0); // cm (using arbitrary units)
+    const [isShooting, setIsShooting] = useState(false);
+    const [targetHit, setTargetHit] = useState(false);
+    const k = 500; // Spring constant N/m
+    const PEe = 0.5 * k * Math.pow(stretch / 100, 2); // Convert cm to m for calc
 
-      {/* Intro Video and Meaning */}
-      <article className="glass-card fade-in" style={{ animationDelay: '0.2s', gridColumn: '1 / -1', display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'center', background: 'linear-gradient(145deg, #ffffff, #fff7ed)', border: '1px solid #fed7aa' }}>
-        <div style={{ flex: '1 1 45%', minWidth: '300px' }}>
-          <CustomVideoPlayer src="/videos/eBsU9DVa7ws.mp4" title="The Difference Between Kinetic and Potential Energy" />
-        </div>
-        <div style={{ flex: '1 1 45%', minWidth: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <h2 style={{ fontSize: '2rem', color: '#c2410c', marginBottom: '1rem' }}>Energy Stored</h2>
-          <p style={{ fontSize: '1.1rem', color: '#431407', lineHeight: '1.7', marginBottom: '1rem' }}>
-            If Kinetic Energy is energy in motion, <strong>Potential Energy (PE) is energy that is stored</strong>. It is energy an object possesses because of its position or its shape (configuration).
-          </p>
-          <p style={{ fontSize: '1.1rem', color: '#431407', lineHeight: '1.7', background: '#ffedd5', padding: '1rem', borderRadius: '1rem' }}>
-            Think of it as energy <strong>"held in reserve."</strong> The work you do on an object to change its position or shape doesn't just disappear; it gets saved inside the object.
-          </p>
-        </div>
-      </article>
+    const handleShoot = () => {
+        if (stretch === 0) return;
+        setIsShooting(true);
+        // Calculate flight time based on stretch (more stretch = faster hit)
+        const flightTime = Math.max(100, 1000 - stretch * 8); 
+        setTimeout(() => setTargetHit(true), flightTime);
+        setTimeout(() => {
+            setIsShooting(false);
+            setTargetHit(false);
+            setStretch(0);
+        }, 2500); // Reset after 2.5s
+    };
 
-      {/* A vs B Section */}
-      <article className="glass-card fade-in" style={{ animationDelay: '0.3s', gridColumn: '1 / -1', background: 'linear-gradient(135deg, #f0fdfa, #ccfbf1)', border: '2px solid #5eead4' }}>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem' }}>
-          {/* Energy of Shape */}
-          <div style={{ flex: '1 1 45%', minWidth: '300px' }}>
-            <h2 style={{ fontSize: '1.8rem', color: '#0f766e', marginBottom: '1rem' }}>A. Energy of Shape (Configuration)</h2>
-            <p style={{ color: '#115e59', marginBottom: '1.5rem' }}>When you change the shape of an object, you are "charging" it with energy.</p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div className="glass-card" style={{ background: 'white' }}>
-                 <strong style={{ color: '#0d9488', fontSize: '1.2rem' }}>The Rubber Band</strong>
-                 <p style={{ color: '#134e4a', marginTop: '0.5rem' }}>When you stretch it, your muscles do work. That work is stored in the band. When you let go, it snaps back.</p>
-              </div>
-              <div className="glass-card" style={{ background: 'white' }}>
-                 <strong style={{ color: '#0d9488', fontSize: '1.2rem' }}>The Slinky</strong>
-                 <p style={{ color: '#134e4a', marginTop: '0.5rem' }}>Whether you stretch it out or compress it like a spring, you are storing energy. The moment you release it, it moves!</p>
-              </div>
-              <div className="glass-card" style={{ background: 'white' }}>
-                 <strong style={{ color: '#0d9488', fontSize: '1.2rem' }}>The Toy Car</strong>
-                 <p style={{ color: '#134e4a', marginTop: '0.5rem' }}>As you wind the key, you are tightening a spring inside. The more you wind, the more Potential Energy you store, and the further it travels.</p>
-              </div>
+    return (
+        <div className="ui-grid" id="view-chapter-2.4">
+            <header className="glass-card banner-card fade-in" style={{ animationDelay: '0.1s', gridColumn: '1 / -1', textAlign: 'center', padding: '3rem 2rem', background: 'linear-gradient(135deg, #ffedd5, #fef3c7)', border: '2px solid #fbd38d' }}>
+                <span className="module-badge" style={{ display: 'inline-block', marginBottom: '1rem', fontSize: '1rem', background: '#ea580c', color: 'white', border: 'none' }}>Module 2</span>
+                <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', margin: '0 0 1rem 0', lineHeight: 1.2, color: '#9a3412' }}>Chapter 4: Potential Energy</h1>
+                <p className="subtitle" style={{ fontSize: '1.2rem', opacity: 0.9, maxWidth: '800px', margin: '0 auto', color: '#7c2d12' }}>
+                    Stored energy waiting to be released
+                </p>
+            </header>
+
+            <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                <article className="glass-card fade-in" style={{ padding: '2rem', animationDelay: '0.2s' }}>
+                    <p style={{ fontSize: '1.2rem', lineHeight: '1.8', color: '#334155' }}>
+                        <strong>Potential Energy (PE)</strong> is stored energy. An object has this energy because of its <em>position</em> or its <em>state</em>.
+                        Unlike Kinetic Energy, you can't always "see" Potential Energy, but it's ready to be released!
+                    </p>
+                    <p style={{ fontSize: '1.1rem', color: '#475569' }}>There are two main types of Potential Energy we will explore:</p>
+
+                    <div className="concept-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', marginTop: '1.5rem' }}>
+                        <div className="concept-card" style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '1rem', border: '1px solid #e2e8f0' }}>
+                            <div className="concept-icon" style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🏗️</div>
+                            <h3 style={{ color: '#0f172a', marginBottom: '0.5rem' }}>Gravitational Potential Energy (PEg)</h3>
+                            <p style={{ color: '#475569', marginBottom: '1rem', lineHeight: 1.6 }}>Energy an object has due to its height above the ground. The higher or heavier the object, the more energy it stores.</p>
+                            <ul className="concept-list" style={{ listStyle: 'none', padding: 0, color: '#334155' }}>
+                                <li><strong>Formula:</strong> <span style={{ fontFamily: 'monospace', background: '#e2e8f0', padding: '2px 6px', borderRadius: '4px' }}>PE = m × g × h</span></li>
+                                <li><strong>m:</strong> Mass (kg)</li>
+                                <li><strong>g:</strong> Gravity (9.8 m/s²)</li>
+                                <li><strong>h:</strong> Height (m)</li>
+                            </ul>
+                        </div>
+                        <div className="concept-card" style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '1rem', border: '1px solid #e2e8f0' }}>
+                            <div className="concept-icon" style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>🏹</div>
+                            <h3 style={{ color: '#0f172a', marginBottom: '0.5rem' }}>Elastic Potential Energy (PEe)</h3>
+                            <p style={{ color: '#475569', marginBottom: '1rem', lineHeight: 1.6 }}>Energy stored when an object is compressed, stretched, or twisted (like a spring or a rubber band).</p>
+                            <ul className="concept-list" style={{ listStyle: 'none', padding: 0, color: '#334155' }}>
+                                <li><strong>Formula:</strong> <span style={{ fontFamily: 'monospace', background: '#e2e8f0', padding: '2px 6px', borderRadius: '4px' }}>PE = ½kx²</span></li>
+                                <li><strong>k:</strong> Spring Constant (Stiffness)</li>
+                                <li><strong>x:</strong> Distance stretched/compressed</li>
+                            </ul>
+                        </div>
+                    </div>
+                </article>
+
+                <article className="glass-card fade-in" style={{ padding: '2rem', animationDelay: '0.3s' }}>
+                    <h2 style={{ color: '#1e40af', borderBottom: '2px solid #bfdbfe', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>Experiential Activity 1: The Heavy Hoist</h2>
+                    <p style={{ fontSize: '1.1rem', color: '#475569' }}>Use the controls to lift the crate. See how changing its mass or height affects its Gravitational Potential Energy.</p>
+
+                    <div className="simulation-container" style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '1rem', margin: '2rem 0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
+                        <div className="sim-controls">
+                            <label style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <strong>Mass (m):</strong> <span><span style={{color: '#8b5cf6', fontWeight: 'bold'}}>{mass}</span> kg</span>
+                            </label>
+                            <input type="range" min="1" max="100" value={mass} onChange={e => setMass(Number(e.target.value))} style={{accentColor: '#8b5cf6', width: '100%', marginBottom: '1rem'}} />
+                            
+                            <label style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                <strong>Height (h):</strong> <span><span style={{color: '#3b82f6', fontWeight: 'bold'}}>{height}</span> m</span>
+                            </label>
+                            <input type="range" min="0" max="20" value={height} step="0.5" onChange={e => setHeight(Number(e.target.value))} style={{accentColor: '#3b82f6', width: '100%'}} />
+                        </div>
+
+                        <div style={{ textAlign: 'center', margin: '1.5rem 0' }}>
+                            <div style={{ fontSize: '1.5rem', padding: '1rem', background: '#dbeafe', color: '#1e40af', borderRadius: '8px', display: 'inline-block', border: '2px solid #93c5fd' }}>
+                                Stored PEg: <strong>{PEg.toFixed(0)} Joules</strong>
+                            </div>
+                        </div>
+
+                        <div className="sim-visual" style={{ height: '300px', borderRadius: '1rem', background: '#e0f2fe', position: 'relative', overflow: 'hidden', border: 'inset 4px #bae6fd' }}>
+                            {/* Ground */}
+                            <div style={{ position: 'absolute', bottom: '0', left: 0, width: '100%', height: '40px', background: '#475569' }}></div>
+                            
+                            {/* The Crane Tower */}
+                            <div style={{ position: 'absolute', left: '20px', width: '20px', height: '100%', background: '#334155' }}></div>
+                            <div style={{ position: 'absolute', left: '20px', top: '20px', width: '150px', height: '15px', background: '#334155' }}></div>
+                            
+                            {/* The Rope */}
+                            <div style={{ 
+                                position: 'absolute', left: `${80 + (50+mass/2)/2 - 2}px`, 
+                                background: '#334155', width: '4px', top: '35px', 
+                                bottom: `${40 + (50+mass/2) + (height/20)*200}px`,
+                                transition: 'bottom 0.3s, left 0.3s'
+                            }}></div>
+
+                            {/* The Crate */}
+                            <div style={{
+                                position: 'absolute', left: '80px', width: `${50 + mass/2}px`, height: `${50 + mass/2}px`,
+                                bottom: `${40 + (height/20)*200}px`, // Max height 200px equivalent to 20m
+                                background: '#ca8a04', border: '4px solid #854d0e', borderRadius: '4px',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                color: 'white', fontWeight: 'bold',
+                                transition: 'bottom 0.3s, width 0.3s, height 0.3s',
+                                boxShadow: '0 10px 15px -3px rgba(0,0,0,0.3)'
+                            }}>{mass}kg</div>
+                            
+                            {/* Height marker */}
+                            <div style={{ position: 'absolute', left: '220px', bottom: '40px', height: `${(height/20)*200}px`, width: '2px', borderLeft: '2px dashed #94a3b8', transition: 'height 0.3s' }}>
+                            <span style={{ position: 'absolute', top: '-25px', left: '-15px', background: '#3b82f6', color: 'white', padding: '2px 6px', borderRadius: '4px', fontSize: '0.8rem' }}>{height}m</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+
+                <article className="glass-card fade-in" style={{ padding: '2rem', animationDelay: '0.4s', background: '#fcf8ff', border: '1px solid #f3e8ff' }}>
+                    <h2 style={{ color: '#86198f', borderBottom: '2px solid #f0abfc', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>Experiential Activity 2: The Slingshot (3D)</h2>
+                    <p style={{ fontSize: '1.1rem', color: '#475569' }}>Pull back the rubber band using the slider. The further you stretch it, the more Elastic Potential Energy you store up!</p>
+
+                    <div className="simulation-container" style={{ margin: '2rem 0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)', borderRadius: '24px' }}>
+                        <SimSlingshot3D />
+                    </div>
+                </article>
             </div>
-          </div>
-          
-          {/* Energy of Position */}
-          <div style={{ flex: '1 1 45%', minWidth: '300px' }}>
-            <h2 style={{ fontSize: '1.8rem', color: '#0f766e', marginBottom: '1rem' }}>B. Energy of Position</h2>
-            <p style={{ color: '#115e59', marginBottom: '1.5rem' }}>You can also store energy by changing where an object is located, especially its height.</p>
-            <img src={`${PREFIX}/s/articles/69c259b77607715f4d06bde6/images/image-20260324150049-2.png`} alt="Bow and Arrow" style={{ width: '100%', maxWidth: '300px', borderRadius: '1rem', marginBottom: '1rem', display: 'block', border: '2px solid #5eead4' }} />
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <div className="glass-card" style={{ background: 'white' }}>
-                 <strong style={{ color: '#0d9488', fontSize: '1.2rem' }}>The Bow and Arrow</strong>
-                 <p style={{ color: '#134e4a', marginTop: '0.5rem' }}>When you pull the string back, the "Work" you did is now Potential Energy. Releasing it turns it into Kinetic Energy.</p>
-              </div>
-              <div className="glass-card" style={{ background: 'white' }}>
-                 <strong style={{ color: '#0d9488', fontSize: '1.2rem' }}>Lifting a Ball</strong>
-                 <p style={{ color: '#134e4a', marginTop: '0.5rem' }}>A heavy ball held over your head isn't moving, but it has the potential to fall and do work (like smashing a walnut).</p>
-              </div>
-            </div>
-          </div>
         </div>
-      </article>
-
-      {/* Slinky Discussion / How is PE stored */}
-      <article className="glass-card fade-in" style={{ animationDelay: '0.4s', gridColumn: '1 / -1', background: 'linear-gradient(135deg, #fdf4ff, #fae8ff)', border: '2px solid #f0abfc' }}>
-        <h2 style={{ fontSize: '2rem', color: '#86198f', marginBottom: '1rem' }}>Classroom Discussion: "The Slinky Test"</h2>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'flex-start' }}>
-          <div style={{ flex: '1 1 45%', minWidth: '300px' }}>
-             <p style={{ fontSize: '1.1rem', color: '#701a75', fontWeight: 'bold' }}>Question: Does a slinky acquire energy when it is compressed?</p>
-             <p style={{ fontSize: '1.1rem', color: '#4a044e', marginTop: '1rem', background: 'white', padding: '1.5rem', borderRadius: '1rem', borderLeft: '6px solid #d946ef' }}>
-               <strong>Answer: Yes!</strong> Whether you stretch it or squash it, you are changing its natural shape. In both cases, the slinky wants to return to its original form, meaning it has stored energy ready to be released.
-             </p>
-             <CustomVideoPlayer src="/videos/paPGNsx-Uak.mp4" title="Slinky Test" />
-          </div>
-
-          <div style={{ flex: '1 1 45%', minWidth: '300px' }}>
-            <h3 style={{ fontSize: '1.5rem', color: '#86198f', marginBottom: '1rem' }}>How is Potential Energy Stored?</h3>
-            <p style={{ color: '#701a75', fontSize: '1.1rem', background: '#fdf4ff', border: '1px dashed #d946ef', padding: '1rem', borderRadius: '0.5rem', marginBottom: '1rem' }}>
-              <strong>A key rule to remember:</strong> Energy is stored as Potential Energy if it is NOT being used to change the object's speed.
-            </p>
-            <ol style={{ paddingLeft: '1.5rem', color: '#4a044e', fontSize: '1.1rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <li><strong>Work is done:</strong> You exert force (pulling a string, lifting a weight).</li>
-              <li><strong>Energy is transferred:</strong> Your energy moves into the object.</li>
-              <li><strong>Position/Shape changes:</strong> The object stays still, but it is now in a "high-energy" state.</li>
-            </ol>
-            <div style={{ marginTop: '1.5rem', background: '#86198f', color: 'white', padding: '1rem', borderRadius: '1rem' }}>
-              <strong>The Scientific Definition:</strong> Potential energy is the energy possessed by an object by virtue of its position (height) or configuration (shape).
-            </div>
-          </div>
-        </div>
-      </article>
-
-    </div>
-  );
-};
-
-export default ChapterTwoFour;
+    );
+}

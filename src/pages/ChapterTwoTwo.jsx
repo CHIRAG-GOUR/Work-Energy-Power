@@ -1,153 +1,120 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import CustomVideoPlayer from '../components/CustomVideoPlayer';
-import { initSim7, initSim8 } from '../lib/simulations';
+export default function ChapterTwoTwo() {
 
-const PREFIX = 'https://login.skillizee.io';
+    // Kinetic Energy Sim state
+    const [mass, setMass] = useState(10); // kg
+    const [velocity, setVelocity] = useState(5); // m/s
+    const [isCrashing, setIsCrashing] = useState(false);
+    
+    // Formula: KE = 1/2 * m * v^2
+    const kineticEnergy = 0.5 * mass * Math.pow(velocity, 2);
 
-const ChapterTwoTwo = () => {
-  useEffect(() => {
-    initSim7();
-    initSim8();
-  }, []);
+    const triggerCrash = () => {
+        setIsCrashing(true);
+        setTimeout(() => setIsCrashing(false), 3000); // Reset after 3 seconds
+    };
 
-  return (
-    <div className="ui-grid fade-in" id="view-chapter-2.2">
-      <header className="glass-card header-card fade-in" style={{ animationDelay: '0.1s', gridColumn: '1 / -1', background: 'linear-gradient(135deg, #ffedd5, #fef3c7)', border: '2px solid #fbd38d' }}>
-        <div className="header-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <h2 style={{ color: '#ea580c', fontSize: '1.5rem', marginBottom: '0.5rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Module 2</h2>
-          <h1 className="bouncy-header" style={{ color: '#9a3412', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px' }}>
-             <span>Chapter</span> <span>2</span> <span>:</span> <span>The</span> <span>Many</span> <span>Faces</span> <span>of</span> <span>Energy</span> <span>(Forms)</span>
-          </h1>
+    return (
+        <div className="ui-grid" id="view-chapter-2.2">
+            <header className="glass-card banner-card fade-in" style={{ animationDelay: '0.1s', gridColumn: '1 / -1', textAlign: 'center', padding: '3rem 2rem', background: 'linear-gradient(135deg, #ffedd5, #fef3c7)', border: '2px solid #fbd38d' }}>
+                <span className="module-badge" style={{ display: 'inline-block', marginBottom: '1rem', fontSize: '1rem', background: '#ea580c', color: 'white', border: 'none' }}>Module 2</span>
+                <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', margin: '0 0 1rem 0', lineHeight: 1.2, color: '#9a3412' }}>Chapter 2: Kinetic Energy in Action</h1>
+                <p className="subtitle" style={{ fontSize: '1.2rem', opacity: 0.9, maxWidth: '800px', margin: '0 auto', color: '#7c2d12' }}>
+                    The energy of motion
+                </p>
+            </header>
+
+            <article className="chapter-content">
+                <p>
+                    <strong>Kinetic Energy (KE)</strong> is the energy of motion. Any object that is moving has kinetic energy. 
+                    The faster it moves, or the heavier it is, the more kinetic energy it possesses.
+                </p>
+
+                <div className="highlight-box math-box" style={{ background: '#bfdbfe', borderLeft: '4px solid #3b82f6', padding: '1rem', borderRadius: '8px', margin: '2rem 0' }}>
+                    <p style={{ margin: 0, fontSize: '1.2rem', textAlign: 'center' }}>
+                        <strong>Formula:</strong> <span style={{ fontFamily: 'monospace', fontSize: '1.3rem' }}>KE = ½mv²</span>
+                    </p>
+                    <p style={{ textAlign: 'center', fontSize: '0.9rem', marginTop: '0.5rem', opacity: 0.8 }}>
+                        Where <strong>m</strong> = mass (kg), and <strong>v</strong> = velocity (m/s)
+                    </p>
+                </div>
+
+                <h2>Experiential Activity: Crash Test Simulator</h2>
+                <p>Change the mass of the car and its speed. Watch how much force it delivers when it hits the block. Notice that doubling the speed increases the Kinetic Energy by <em>four</em> times!</p>
+
+                <div className="simulation-container" style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '1rem', margin: '2rem 0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
+                    <div className="sim-controls">
+                        <label style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <strong>Mass of Car (m):</strong> <span><span style={{color: '#8b5cf6', fontWeight: 'bold'}}>{mass}</span> kg</span>
+                        </label>
+                        <input type="range" min="1" max="50" value={mass} onChange={e => setMass(Number(e.target.value))} disabled={isCrashing} style={{accentColor: '#8b5cf6', height: '8px', width: '100%', marginBottom: '1rem'}} />
+                        
+                        <label style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <strong>Velocity (v):</strong> <span><span style={{color: '#f43f5e', fontWeight: 'bold'}}>{velocity}</span> m/s</span>
+                        </label>
+                        <input type="range" min="1" max="20" value={velocity} onChange={e => setVelocity(Number(e.target.value))} disabled={isCrashing} style={{accentColor: '#f43f5e', height: '8px', width: '100%'}} />
+                    </div>
+
+                    <div style={{ textAlign: 'center', margin: '1.5rem 0' }}>
+                        <div style={{ fontSize: '1.5rem', padding: '1rem', background: 'white', borderRadius: '8px', display: 'inline-block', border: '2px solid #e2e8f0' }}>
+                            Current KE: <strong>{kineticEnergy.toFixed(1)} Joules</strong>
+                        </div>
+                        <br />
+                        <button 
+                            onClick={triggerCrash} 
+                            disabled={isCrashing}
+                            style={{ margin: '1rem', padding: '1rem 2rem', fontSize: '1.2rem', background: '#3b82f6', color: 'white', border: 'none', borderRadius: '3rem', cursor: isCrashing ? 'not-allowed' : 'pointer', fontWeight: 'bold', boxShadow: '0 4px 0 #2563eb', transition: 'all 0.1s' }}
+                            onMouseDown={e => e.currentTarget.style.transform = 'translateY(4px)'}
+                            onMouseUp={e => e.currentTarget.style.transform = 'translateY(0px)'}
+                        >
+                            💥 CRASH TEST
+                        </button>
+                    </div>
+
+                    <div className="sim-visual" style={{ height: '150px', borderRadius: '1rem', background: '#dbeafe', position: 'relative', overflow: 'hidden', border: 'inset 4px #bfdbfe' }}>
+                        {/* The Road */}
+                        <div style={{ position: 'absolute', bottom: '0', left: 0, width: '100%', height: '40px', background: '#94a3b8' }}></div>
+
+                        {/* The Car */}
+                        <div style={{
+                            position: 'absolute', bottom: '40px',
+                            left: isCrashing ? 'calc(100% - 200px)' : '20px', // Drives to block
+                            width: `${60 + mass}px`, // Car length visual representation
+                            transition: isCrashing ? `left ${20 / velocity}s ease-in` : 'left 0s',
+                            display: 'flex', alignItems: 'flex-end', justifyContent: 'center',
+                            zIndex: 10,
+                            transform: 'scaleX(-1)', // Flips the emoji to face right
+                            fontSize: `${2 + mass/40}rem`, // Car grows slightly with mass
+                            lineHeight: 1
+                        }}>
+                             🚗
+                        </div>
+
+                        {/* The Wooden Block */}
+                        <div style={{
+                            position: 'absolute', bottom: '40px', right: '40px',
+                            width: '80px', height: '80px', background: '#ca8a04', borderRadius: '8px',
+                            border: '4px solid #854d0e',
+                            transform: isCrashing ? `translateX(${kineticEnergy / 10}px) rotate(${kineticEnergy / 50}deg)` : 'none',
+                            transition: isCrashing ? 'transform 0.5s ease-out' : 'transform 0.1s',
+                            transitionDelay: isCrashing ? `${20 / velocity}s` : '0s'
+                        }}>
+                             <div style={{textAlign:'center', marginTop:'30px', color:'white', fontWeight:'bold'}}>BLOCK</div>
+                        </div>
+
+                        {/* Impact Explosion */}
+                        <div style={{
+                            position: 'absolute', bottom: '50px', right: '120px', fontSize: '4rem',
+                            opacity: isCrashing ? 1 : 0, 
+                            transform: isCrashing ? 'scale(1.5)' : 'scale(0.5)',
+                            transition: `opacity 0.1s ${20 / velocity}s, transform 0.2s ${20 / velocity}s`, 
+                            zIndex: 20,
+                            pointerEvents: 'none'
+                        }}>💥</div>
+                    </div>
+                </div>
+            </article>
         </div>
-      </header>
-
-      {/* Video Section */}
-      <article className="glass-card fade-in" style={{ animationDelay: '0.2s', gridColumn: '1 / -1', display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'center', background: 'linear-gradient(145deg, #ffffff, #fff7ed)', border: '1px solid #fed7aa' }}>
-        <div style={{ flex: '1 1 45%', minWidth: '300px' }}>
-          <CustomVideoPlayer src="/videos/XiNx7YBnM-s.mp4" title="Different Forms Of Energy | Physics" />
-        </div>
-        <div style={{ flex: '1 1 45%', minWidth: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-          <h2 style={{ fontSize: '2rem', color: '#c2410c', marginBottom: '1rem' }}>Energy is the ultimate shape-shifter</h2>
-          <p style={{ fontSize: '1.1rem', color: '#431407', lineHeight: '1.7', marginBottom: '1.5rem' }}>
-            It can change its appearance depending on where it is and what it is doing. Here are the most common forms you'll encounter.
-          </p>
-        </div>
-      </article>
-
-      {/* The Big Two: Mechanical Energy */}
-      <article className="glass-card fade-in" style={{ animationDelay: '0.3s', gridColumn: '1 / -1', background: 'linear-gradient(135deg, #f0fdf4, #dcfce7)', border: '2px solid #86efac' }}>
-        <h2 style={{ fontSize: '2rem', color: '#166534', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-           The "Big Two": Mechanical Energy
-        </h2>
-        <p style={{ fontSize: '1.1rem', color: '#14532d', marginBottom: '1.5rem' }}>
-          Mechanical energy is the total energy an object has due to its motion or its position. It is actually a "team" made up of two parts:
-        </p>
-        
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.5rem' }}>
-          <div className="glass-card" style={{ background: 'white', border: '1px solid #bbf7d0' }}>
-            <h3 style={{ color: '#15803d', fontSize: '1.3rem', marginBottom: '0.5rem' }}>🏃 Kinetic Energy</h3>
-            <p style={{ color: '#14532d', lineHeight: '1.6' }}>The energy of motion. If it's moving (like a flying arrow), it has Kinetic Energy.</p>
-          </div>
-          <div className="glass-card" style={{ background: 'white', border: '1px solid #bbf7d0' }}>
-            <h3 style={{ color: '#15803d', fontSize: '1.3rem', marginBottom: '0.5rem' }}>⛰️ Potential Energy</h3>
-            <p style={{ color: '#14532d', lineHeight: '1.6' }}>The energy of position. If it's waiting to move (like a ball sitting at the top of a hill), it has Potential Energy.</p>
-          </div>
-        </div>
-      </article>
-
-      {/* Other Famous Forms */}
-      <article className="glass-card fade-in" style={{ animationDelay: '0.4s', gridColumn: '1 / -1', background: 'linear-gradient(135deg, #f5f3ff, #ede9fe)', border: '2px solid #ddd6fe' }}>
-        <h2 style={{ fontSize: '2rem', color: '#5b21b6', marginBottom: '1rem' }}>Other Famous Forms</h2>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'flex-start' }}>
-           <div style={{ flex: '1 1 50%', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-             <div className="glass-card" style={{ background: 'white', borderLeft: '6px solid #8b5cf6' }}>
-               <h3 style={{ color: '#6d28d9', fontSize: '1.2rem', marginBottom: '0.5rem' }}>🔥 Heat (Thermal) Energy</h3>
-               <p style={{ color: '#4c1d95' }}>The energy of vibrating atoms. It's what makes your cocoa hot!</p>
-             </div>
-             <div className="glass-card" style={{ background: 'white', borderLeft: '6px solid #10b981' }}>
-               <h3 style={{ color: '#059669', fontSize: '1.2rem', marginBottom: '0.5rem' }}>🧪 Chemical Energy</h3>
-               <p style={{ color: '#047857' }}>Energy stored in the bonds of molecules. This is found in the food you eat and the batteries in your remote.</p>
-             </div>
-             <div className="glass-card" style={{ background: 'white', borderLeft: '6px solid #eab308' }}>
-               <h3 style={{ color: '#ca8a04', fontSize: '1.2rem', marginBottom: '0.5rem' }}>⚡ Electrical Energy</h3>
-               <p style={{ color: '#a16207' }}>The energy of moving electrons. It powers our lights, phones, and computers.</p>
-             </div>
-             <div className="glass-card" style={{ background: 'white', borderLeft: '6px solid #3b82f6' }}>
-               <h3 style={{ color: '#2563eb', fontSize: '1.2rem', marginBottom: '0.5rem' }}>💡 Light Energy</h3>
-               <p style={{ color: '#1d4ed8' }}>A form of electromagnetic radiation that allows us to see the world.</p>
-             </div>
-           </div>
-           <div style={{ flex: '1 1 40%', minWidth: '300px' }}>
-              <img src={`${PREFIX}/s/articles/69c23c1540cacaa971a783a2/images/image-20260324125407-2.png`} alt="Energy Forms" style={{ width: '100%', borderRadius: '1.5rem', boxShadow: '0 8px 20px rgba(0,0,0,0.1)' }} />
-           </div>
-        </div>
-      </article>
-
-      {/* Energy Transformation */}
-      <article className="glass-card fade-in" style={{ animationDelay: '0.5s', gridColumn: '1 / -1', background: 'linear-gradient(135deg, #ecfeff, #ccfbf1)', border: '2px solid #5eead4' }}>
-        <h2 style={{ fontSize: '2rem', color: '#0f766e', marginBottom: '1rem' }}>Are Various Energy Forms Interconvertible?</h2>
-        <p style={{ fontSize: '1.1rem', color: '#115e59', marginBottom: '1.5rem', fontWeight: 'bold' }}>
-          Yes. In nature, energy is constantly transforming from one form to another. The total energy of an isolated system remains constant during these changes.
-        </p>
-
-        <h3 style={{ color: '#0d9488', fontSize: '1.5rem', marginBottom: '1rem' }}>Common Examples of Transformation</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem', marginBottom: '2rem' }}>
-           <div className="glass-card" style={{ background: 'white' }}>
-             <p style={{ color: '#115e59' }}><strong>Mechanical to Electrical:</strong> Falling water turns a turbine (mechanical), converted into electrical energy by a generator.</p>
-           </div>
-           <div className="glass-card" style={{ background: 'white' }}>
-             <p style={{ color: '#115e59' }}><strong>Electrical to Heat/Light:</strong> Switching on a bulb converts electrical energy into light and heat energy.</p>
-           </div>
-           <div className="glass-card" style={{ background: 'white' }}>
-             <p style={{ color: '#115e59' }}><strong>Chemical to Heat/Mechanical:</strong> Eating food converts chemical energy into heat (body temp) and mechanical energy (muscles).</p>
-           </div>
-           <div className="glass-card" style={{ background: 'white' }}>
-             <p style={{ color: '#115e59' }}><strong>Electrical to Sound:</strong> In a loudspeaker, electrical signals are converted into sound energy.</p>
-           </div>
-        </div>
-        <img src={`${PREFIX}/s/articles/69c23c1540cacaa971a783a2/images/image-20260324125407-3.png`} alt="Energy Transformations" style={{ width: '100%', maxWidth: '600px', display: 'block', margin: '0 auto', borderRadius: '1rem' }} />
-      </article>
-
-      {/* Activity 1 (Simulation 7) */}
-      <article className="glass-card fade-in" style={{ animationDelay: '0.6s', gridColumn: '1 / -1', display: 'flex', flexWrap: 'wrap', gap: '2rem', background: 'linear-gradient(145deg, #fffbeb, #ccfbf1)', border: '1px solid #5eead4' }}>
-        <div style={{ flex: '1 1 45%', minWidth: '300px' }}>
-          <h2 style={{ fontSize: '2rem', color: '#0f766e', marginBottom: '1rem' }}>Activity: Dropping the Ball</h2>
-          <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.8rem', color: '#115e59', fontSize: '1.05rem' }}>
-            <li>📍 <b>Step 1:</b> Take a heavy ball. Drop it on a thick bed of wet sand from a height of about 25 cm.</li>
-            <li>📏 <b>Step 2:</b> Repeat from heights of 50 cm, 1m, and 1.5 m.</li>
-            <li>👀 <b>Step 3:</b> Ensure the depressions are distinctly visible and mark them.</li>
-            <li>🤔 <b>Discuss:</b> Which is deepest? Which is shallowest? Why? What caused the deeper dent?</li>
-          </ul>
-        </div>
-        <div style={{ flex: '1 1 45%', minWidth: '300px', background: '#000', borderRadius: '1.5rem', overflow: 'hidden', minHeight: '300px', position: 'relative' }}>
-          <canvas id="sim7-canvas" style={{ width: '100%', height: '100%', display: 'block' }}></canvas>
-          <div style={{ position: 'absolute', top: '10px', left: '10px', background: 'rgba(255,255,255,0.7)', padding: '4px 10px', borderRadius: '8px', fontSize: '0.9rem', fontWeight: 'bold' }}>Interactive: Ball Drop on Sand</div>
-        </div>
-      </article>
-
-      {/* Activity 2 (Simulation 8) */}
-      <article className="glass-card fade-in" style={{ animationDelay: '0.7s', gridColumn: '1 / -1', display: 'flex', flexWrap: 'wrap', gap: '2rem', background: 'linear-gradient(145deg, #fdf4ff, #fae8ff)', border: '1px solid #f0abfc' }}>
-         <div style={{ flex: '1 1 45%', minWidth: '300px', background: '#000', borderRadius: '1.5rem', overflow: 'hidden', minHeight: '300px', position: 'relative' }}>
-          <canvas id="sim8-canvas" style={{ width: '100%', height: '100%', display: 'block' }}></canvas>
-          <div style={{ position: 'absolute', top: '10px', left: '10px', background: 'rgba(255,255,255,0.7)', padding: '4px 10px', borderRadius: '8px', fontSize: '0.9rem', fontWeight: 'bold' }}>Interactive: Trolley & Wooden Block</div>
-         </div>
-        <div style={{ flex: '1 1 45%', minWidth: '300px' }}>
-          <h2 style={{ fontSize: '2rem', color: '#86198f', marginBottom: '1rem' }}>Activity: The Moving Trolley</h2>
-          <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: '0.8rem', color: '#701a75', fontSize: '1.05rem' }}>
-            <li>🛒 <b>Step 1:</b> Set up the apparatus with a trolley and a fixed wooden block.</li>
-            <li>⚖️ <b>Step 2:</b> Place a known mass on the pan so the trolley starts moving.</li>
-            <li>💥 <b>Step 3:</b> The trolley hits the block and displaces it.</li>
-            <li>📝 <b>Analyze:</b> Note the displacement. Work is done by the trolley. Where did the energy come from?</li>
-            <li>🔄 <b>Repeat:</b> Increase the mass on the pan. In which case is the displacement more?</li>
-          </ul>
-          <p style={{ marginTop: '1rem', color: '#701a75', fontWeight: 'bold', background: 'rgba(255,255,255,0.6)', padding: '1rem', borderRadius: '1rem' }}>
-            In this activity, the moving trolley does work and hence it possesses energy.
-          </p>
-        </div>
-      </article>
-
-    </div>
-  );
-};
-
-export default ChapterTwoTwo;
+    );
+}

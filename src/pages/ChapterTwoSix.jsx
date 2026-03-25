@@ -14,16 +14,14 @@ const ChapterTwoSix = () => {
   }, []);
 
   return (
-    <div className="ui-grid fade-in" id="view-chapter-2.6">
-      <header className="glass-card header-card fade-in" style={{ animationDelay: '0.1s', gridColumn: '1 / -1', background: 'linear-gradient(135deg, #fce7f3, #fbcfe8)', border: '2px solid #f9a8d4' }}>
-        <div className="header-content" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <h2 style={{ color: '#db2777', fontSize: '1.5rem', marginBottom: '0.5rem', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '0.1em' }}>Module 2</h2>
-          <h1 className="bouncy-header" style={{ color: '#9d174d', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px' }}>
-             <span>Chapter</span> <span>2.6</span> <span>:</span> <span>Law</span> <span>of</span> <span>Conservation</span>
-          </h1>
-          <p className="subtitle" style={{ textAlign: 'center', fontSize: '1.2rem', color: '#be185d', marginTop: '0.5rem', fontWeight: 'bold' }}>Energy Never Disappears</p>
-        </div>
-      </header>
+    <div className="ui-grid" id="view-chapter-2.6">
+        <header className="glass-card banner-card fade-in" style={{ animationDelay: '0.1s', gridColumn: '1 / -1', textAlign: 'center', padding: '3rem 2rem', background: 'linear-gradient(135deg, #ffedd5, #fef3c7)', border: '2px solid #fbd38d' }}>
+            <span className="module-badge" style={{ display: 'inline-block', marginBottom: '1rem', fontSize: '1rem', background: '#ea580c', color: 'white', border: 'none' }}>Module 2</span>
+            <h1 style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', margin: '0 0 1rem 0', lineHeight: 1.2, color: '#9a3412' }}>Chapter 6: Law of Conservation</h1>
+            <p className="subtitle" style={{ fontSize: '1.2rem', opacity: 0.9, maxWidth: '800px', margin: '0 auto', color: '#7c2d12' }}>
+                Energy Never Disappears
+            </p>
+        </header>
 
       {/* Intro & Video */}
       <article className="glass-card fade-in" style={{ animationDelay: '0.2s', gridColumn: '1 / -1', display: 'flex', flexWrap: 'wrap', gap: '2rem', alignItems: 'flex-start', background: 'linear-gradient(145deg, #ffffff, #fdf2f8)', border: '1px solid #fbcfe8' }}>
@@ -34,10 +32,10 @@ const ChapterTwoSix = () => {
           </p>
           <div style={{ background: '#831843', color: 'white', padding: '1.5rem', borderRadius: '1rem', marginTop: '1rem' }}>
              <h3 style={{ fontSize: '1.3rem', marginBottom: '0.5rem', color: '#fbcfe8' }}>The Law of Conservation of Energy</h3>
-             <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', lineHeight: '1.6' }}>
-                <li>Energy cannot be created from nothing.</li>
-                <li>Energy cannot be destroyed.</li>
-                <li>It can only change forms (like switching from "stored" energy to "moving" energy).</li>
+             <ul style={{ listStyleType: 'circle', paddingLeft: '1.5rem', lineHeight: '1.6', color: 'white' }}>
+                <li style={{ color: 'white' }}>Energy cannot be created from nothing.</li>
+                <li style={{ color: 'white' }}>Energy cannot be destroyed.</li>
+                <li style={{ color: 'white' }}>It can only change forms (like switching from "stored" energy to "moving" energy).</li>
              </ul>
           </div>
         </div>
@@ -78,10 +76,10 @@ const ChapterTwoSix = () => {
         <div style={{ flex: '1 1 40%', minWidth: '300px' }}>
           <h2 style={{ fontSize: '2rem', color: '#9a3412', marginBottom: '1rem' }}>The Golden Rule</h2>
           <p style={{ fontSize: '1.2rem', color: '#7c2d12', marginBottom: '1rem' }}>
-            If you add the Potential Energy ($mgh$) and the Kinetic Energy ($\frac{1}{2}mv^2$) together at any point during the fall, the answer is always the same number!
+            If you add the Potential Energy (mgh) and the Kinetic Energy (½mv²) together at any point during the fall, the answer is always the same number!
           </p>
           <div style={{ background: '#ea580c', color: 'white', padding: '1rem', borderRadius: '1rem', textAlign: 'center', fontSize: '1.5rem', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1)' }}>
-            $Total\ Energy = PE + KE$
+            <span style={{ fontFamily: 'monospace' }}>Total Energy = PE + KE</span>
           </div>
           <p style={{ color: '#7c2d12', marginTop: '1rem', lineHeight: '1.6' }}>
             We call this sum the <strong>Total Mechanical Energy</strong>. Even though the ball is falling and speeding up, the "bank account" of total energy stays exactly the same from start to finish.
