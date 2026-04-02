@@ -215,11 +215,11 @@ export default function SimPullCartContainer() {
     const audioTimeoutRef = useRef(null);
 
     React.useEffect(() => {
-        cartAudioRef.current = new Audio('/sounds/bullcart_creak.mp3');
+        cartAudioRef.current = new Audio('/sounds/Bull cart.mp3');
         cartAudioRef.current.loop = true;
         cartAudioRef.current.volume = 0.5;
 
-        mooAudioRef.current = new Audio('/sounds/bull.mp3');
+        mooAudioRef.current = new Audio('/sounds/bull sound.mp3');
         mooAudioRef.current.volume = 0.5;
         
         return () => {
