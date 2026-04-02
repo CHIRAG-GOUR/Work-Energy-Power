@@ -21,44 +21,44 @@ const Bullock3D = ({ isPulling, positionX }) => {
         // Leg Animation
         if (isPulling) {
             const time = state.clock.elapsedTime * 10;
-            if (legsRef.current[0]) legsRef.current[0].rotation.z = Math.sin(time) * 0.4; // Front Left
-            if (legsRef.current[1]) legsRef.current[1].rotation.z = -Math.sin(time) * 0.4; // Front Right
-            if (legsRef.current[2]) legsRef.current[2].rotation.z = -Math.sin(time) * 0.4; // Back Left
-            if (legsRef.current[3]) legsRef.current[3].rotation.z = Math.sin(time) * 0.4; // Back Right
+            if (legsRef.current[0]) legsRef.current[0].rotation.z = Math.sin(time) * 0.4;
+            if (legsRef.current[1]) legsRef.current[1].rotation.z = -Math.sin(time) * 0.4;
+            if (legsRef.current[2]) legsRef.current[2].rotation.z = -Math.sin(time) * 0.4;
+            if (legsRef.current[3]) legsRef.current[3].rotation.z = Math.sin(time) * 0.4;
         } else {
-            // Reset legs to idle
             legsRef.current.forEach(leg => {
                 if(leg) leg.rotation.z = THREE.MathUtils.lerp(leg.rotation.z, 0, 5 * delta);
             });
         }
     });
 
-    const skinMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#fcd34d' }), []);
-    const hornMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#fef3c7' }), []);
-    const hoofMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#1e293b' }), []);
-
     return (
         <group ref={groupRef} position={[0, 0, 0]}>
             {/* Body */}
-            <mesh position={[0, 0.8, 0]} material={skinMat} castShadow receiveShadow>
+            <mesh position={[0, 1.2, 0]} castShadow receiveShadow>
                 <boxGeometry args={[1.5, 0.6, 0.6]} />
+                <meshStandardMaterial color="#fcd34d" />
             </mesh>
             
             {/* Head */}
-            <mesh position={[-0.8, 1.1, 0]} material={skinMat} castShadow receiveShadow>
+            <mesh position={[-0.8, 1.5, 0]} castShadow receiveShadow>
                 <boxGeometry args={[0.5, 0.5, 0.4]} />
+                <meshStandardMaterial color="#fcd34d" />
             </mesh>
             {/* Snout */}
-            <mesh position={[-1.0, 1.0, 0]} material={{...skinMat, color: '#f59e0b'}} castShadow receiveShadow>
+            <mesh position={[-1.0, 1.4, 0]} castShadow receiveShadow>
                 <boxGeometry args={[0.3, 0.3, 0.3]} />
+                <meshStandardMaterial color="#f59e0b" />
             </mesh>
 
             {/* Horns */}
-            <mesh position={[-0.7, 1.4, 0.15]} rotation={[0, 0, -0.3]} material={hornMat} castShadow receiveShadow>
+            <mesh position={[-0.7, 1.8, 0.15]} rotation={[0, 0, -0.3]} castShadow receiveShadow>
                 <coneGeometry args={[0.08, 0.4, 8]} />
+                <meshStandardMaterial color="#fef3c7" />
             </mesh>
-            <mesh position={[-0.7, 1.4, -0.15]} rotation={[0, 0, 0.3]} material={hornMat} castShadow receiveShadow>
+            <mesh position={[-0.7, 1.8, -0.15]} rotation={[0, 0, 0.3]} castShadow receiveShadow>
                 <coneGeometry args={[0.08, 0.4, 8]} />
+                <meshStandardMaterial color="#fef3c7" />
             </mesh>
 
             {/* Legs */}
@@ -68,12 +68,14 @@ const Bullock3D = ({ isPulling, positionX }) => {
                 [0.5, 0.4, 0.2], // BL
                 [0.5, 0.4, -0.2] // BR
             ].map((pos, i) => (
-                <group key={i} position={[pos[0], 0.6, pos[2]]} ref={el => legsRef.current[i] = el}>
-                    <mesh position={[0, -0.3, 0]} material={skinMat} castShadow receiveShadow>
-                        <boxGeometry args={[0.15, 0.6, 0.15]} />
+                <group key={i} position={[pos[0], 0.9, pos[2]]} ref={el => legsRef.current[i] = el}>
+                    <mesh position={[0, -0.4, 0]} castShadow receiveShadow>
+                        <boxGeometry args={[0.15, 0.8, 0.15]} />
+                        <meshStandardMaterial color="#fcd34d" />
                     </mesh>
-                    <mesh position={[0, -0.65, 0]} material={hoofMat} castShadow receiveShadow>
+                    <mesh position={[0, -0.85, 0]} castShadow receiveShadow>
                         <boxGeometry args={[0.16, 0.1, 0.16]} />
+                        <meshStandardMaterial color="#1e293b" />
                     </mesh>
                 </group>
             ))}
@@ -87,41 +89,43 @@ const Cart3D = ({ isPulling, positionX }) => {
 
     useFrame((state, delta) => {
         if (groupRef.current) {
-            groupRef.current.position.x = positionX + 2; // Follow behind bullock
+            groupRef.current.position.x = positionX + 2.2; // Follow behind bullock
         }
         
-        if (isPulling) {
-            // Rotate wheels based on displacement
-            const speed = 2 * delta; // Radians to rotate
-            wheelsRef.current.forEach(wheel => {
-                if (wheel) wheel.rotation.z += speed * 5; // Wheel spin
-            });
-        }
+        // Exact Physics calculation: rotation angle = distance / radius
+        // The wheels move along the X axis. We rotate around the Y-axis (which is mapped to Z visually due to parent X rotation).
+        // Cylinder radius is 0.4.
+        const rotationAngle = positionX / 0.4;
+        wheelsRef.current.forEach(wheel => {
+            if (wheel) wheel.rotation.y = rotationAngle;
+        });
     });
-
-    const woodMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#78350f', roughness: 0.9 }), []);
-    const darkWoodMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#451a03', roughness: 0.9 }), []);
 
     return (
         <group ref={groupRef} position={[2, 0, 0]}>
             {/* Chassis */}
-            <mesh position={[0, 0.6, 0]} material={woodMat} castShadow receiveShadow>
+            <mesh position={[0, 0.8, 0]} castShadow receiveShadow>
                 <boxGeometry args={[1.8, 0.2, 1.2]} />
+                <meshStandardMaterial color="#78350f" roughness={0.9} />
             </mesh>
             {/* Sidewalls */}
-            <mesh position={[0, 0.8, 0.55]} material={darkWoodMat} castShadow receiveShadow>
+            <mesh position={[0, 1.0, 0.55]} castShadow receiveShadow>
                 <boxGeometry args={[1.8, 0.4, 0.1]} />
+                <meshStandardMaterial color="#451a03" roughness={0.9} />
             </mesh>
-            <mesh position={[0, 0.8, -0.55]} material={darkWoodMat} castShadow receiveShadow>
+            <mesh position={[0, 1.0, -0.55]} castShadow receiveShadow>
                 <boxGeometry args={[1.8, 0.4, 0.1]} />
+                <meshStandardMaterial color="#451a03" roughness={0.9} />
             </mesh>
-            <mesh position={[0.85, 0.8, 0]} material={darkWoodMat} castShadow receiveShadow>
+            <mesh position={[0.85, 1.0, 0]} castShadow receiveShadow>
                 <boxGeometry args={[0.1, 0.4, 1.2]} />
+                <meshStandardMaterial color="#451a03" roughness={0.9} />
             </mesh>
             
             {/* Harness connecting to bullock */}
-            <mesh position={[-1.3, 0.8, 0]} material={darkWoodMat} castShadow receiveShadow>
-                <boxGeometry args={[1.6, 0.05, 0.8]} />
+            <mesh position={[-1.6, 0.9, 0]} castShadow receiveShadow>
+                <boxGeometry args={[2.0, 0.05, 0.8]} />
+                <meshStandardMaterial color="#451a03" roughness={0.9} />
             </mesh>
 
             {/* Wheels */}
@@ -129,22 +133,35 @@ const Cart3D = ({ isPulling, positionX }) => {
                 [0, 0.4, 0.65],
                 [0, 0.4, -0.65]
             ].map((pos, i) => (
-                <mesh key={i} position={pos} rotation={[Math.PI / 2, 0, 0]} ref={el => wheelsRef.current[i] = el} material={woodMat} castShadow receiveShadow>
+                <mesh key={i} position={pos} rotation={[Math.PI / 2, 0, 0]} ref={el => wheelsRef.current[i] = el} castShadow receiveShadow>
                     <cylinderGeometry args={[0.4, 0.4, 0.1, 16]} />
+                    <meshStandardMaterial color="#78350f" roughness={0.9} />
                     {/* Dark rim */}
-                    <mesh material={darkWoodMat}>
+                    <mesh>
                          <cylinderGeometry args={[0.42, 0.42, 0.05, 16]} />
+                         <meshStandardMaterial color="#451a03" roughness={0.9} />
+                    </mesh>
+                    {/* Visual Spokes for visible rotation */}
+                    <mesh rotation={[0, 0, 0]}>
+                        <boxGeometry args={[0.78, 0.05, 0.15]} />
+                        <meshStandardMaterial color="#451a03" />
+                    </mesh>
+                    <mesh rotation={[0, Math.PI / 2, 0]}>
+                        <boxGeometry args={[0.78, 0.05, 0.15]} />
+                        <meshStandardMaterial color="#451a03" />
                     </mesh>
                 </mesh>
             ))}
             
             {/* Cargo Box */}
-            <mesh position={[0, 0.9, 0]} material={new THREE.MeshStandardMaterial({ color: '#f59e0b' })} castShadow receiveShadow>
+            <mesh position={[0, 1.1, 0]} castShadow receiveShadow>
                 <boxGeometry args={[0.8, 0.6, 0.8]} />
+                <meshStandardMaterial color="#f59e0b" />
             </mesh>
             {/* Rope to bullock center */}
-            <mesh position={[-1.0, 0.8, 0]} rotation={[0, 0, Math.PI / 2]} material={new THREE.MeshStandardMaterial({ color: '#111' })} castShadow receiveShadow>
-                <cylinderGeometry args={[0.02, 0.02, 2, 8]} />
+            <mesh position={[-1.2, 1.0, 0]} rotation={[0, 0, Math.PI / 2]} castShadow receiveShadow>
+                <cylinderGeometry args={[0.02, 0.02, 2.4, 8]} />
+                <meshStandardMaterial color="#111111" />
             </mesh>
         </group>
     );
@@ -153,28 +170,27 @@ const Cart3D = ({ isPulling, positionX }) => {
 const Scene3D = ({ isPulling, displacement }) => {
     return (
         <group>
-            {/* Group wrapper to move the camera with the cart or let cart move off screen */}
             {/* Let's have the cart move from right to left */}
-            <group position={[4, -0.5, 0]}> {/* Offset start position to right */}
+            <group position={[4, 0, 0]}> {/* Offset start position to right */}
                 <Bullock3D isPulling={isPulling} positionX={-displacement} />
                 <Cart3D isPulling={isPulling} positionX={-displacement} />
                 
                 {/* Distance Markers along ground */}
-                {Array.from({ length: 11 }).map((_, i) => (
-                    <group key={i} position={[-i, 0.01, 1.5]}>
+                {Array.from({ length: 21 }).map((_, i) => (
+                    <group key={i} position={[-i, 0.01, 2.0]}>
                         <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-                            <planeGeometry args={[0.1, 0.5]} />
+                            <planeGeometry args={[0.05, 1.0]} />
                             <meshStandardMaterial color="#3b82f6" />
                         </mesh>
-                        <Text position={[0, 0, 0.5]} rotation={[-Math.PI/2, 0, 0]} fontSize={0.4} color="#1e293b" anchorX="center" anchorY="middle">
+                        <Text position={[0, 0.05, 1.0]} rotation={[-Math.PI/2, 0, 0]} fontSize={0.6} color="#1e293b" anchorX="center" anchorY="middle">
                             {i}m
                         </Text>
                     </group>
                 ))}
 
                 {/* Ground floor line to show path */}
-                <mesh position={[-5, 0.005, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
-                    <planeGeometry args={[12, 0.1]} />
+                <mesh position={[-10, 0.005, 0]} rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+                    <planeGeometry args={[24, 1.5]} />
                     <meshStandardMaterial color="#94a3b8" />
                 </mesh>
             </group>
@@ -186,12 +202,36 @@ export default function SimPullCartContainer() {
     const [isPulling, setIsPulling] = useState(false);
     const [displacement, setDisplacement] = useState(0);
     const force = 300; // Newtons
-    const maxDisplacement = 10;
+    const maxDisplacement = 20;
     
     // Manage animation frame outside canvas via RAF, or just use simple useEffect interval/timeout for React state
     // Since we need smooth React state updates for the UI overlay:
     const frameRef = useRef();
     const lastTimeRef = useRef();
+
+    // Audio SFX
+    const cartAudioRef = useRef(null);
+    const mooAudioRef = useRef(null);
+
+    React.useEffect(() => {
+        cartAudioRef.current = new Audio('https://actions.google.com/sounds/v1/foley/wooden_cart_wheels_creaking.ogg');
+        cartAudioRef.current.loop = true;
+        cartAudioRef.current.volume = 0.5;
+
+        mooAudioRef.current = new Audio('https://actions.google.com/sounds/v1/animals/cow_moo.ogg');
+        mooAudioRef.current.volume = 0.3;
+        
+        return () => {
+            if (cartAudioRef.current) {
+                cartAudioRef.current.pause();
+                cartAudioRef.current.currentTime = 0;
+            }
+            if (mooAudioRef.current) {
+                mooAudioRef.current.pause();
+                mooAudioRef.current.currentTime = 0;
+            }
+        };
+    }, []);
 
     const updateSimulation = (time) => {
         if (!lastTimeRef.current) lastTimeRef.current = time;
@@ -215,9 +255,21 @@ export default function SimPullCartContainer() {
         if (isPulling) {
             lastTimeRef.current = performance.now();
             frameRef.current = requestAnimationFrame(updateSimulation);
+            // Play sounds
+            if (cartAudioRef.current) {
+                cartAudioRef.current.play().catch(e => console.warn('Audio play blocked:', e));
+            }
+            if (displacement === 0 && mooAudioRef.current) {
+                mooAudioRef.current.currentTime = 0;
+                mooAudioRef.current.play().catch(e => console.warn('Audio play blocked:', e));
+            }
         } else {
             if (frameRef.current) cancelAnimationFrame(frameRef.current);
             lastTimeRef.current = null;
+            // Stop sound
+            if (cartAudioRef.current) {
+                cartAudioRef.current.pause();
+            }
         }
         return () => {
             if (frameRef.current) cancelAnimationFrame(frameRef.current);
@@ -233,6 +285,10 @@ export default function SimPullCartContainer() {
     const reset = () => {
         setIsPulling(false);
         setDisplacement(0);
+        if (cartAudioRef.current) {
+            cartAudioRef.current.pause();
+            cartAudioRef.current.currentTime = 0;
+        }
     };
 
     const workDone = Math.floor(force * displacement);
@@ -258,12 +314,12 @@ export default function SimPullCartContainer() {
                 <Scene3D isPulling={isPulling} displacement={displacement} />
 
                 {/* Sky and Ground Env */}
-                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.5, 0]} receiveShadow>
+                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]} receiveShadow>
                     <planeGeometry args={[100, 100]} />
                     <meshStandardMaterial color="#cbd5e1" roughness={1} />
                 </mesh>
                 
-                <ContactShadows position={[0, -0.49, 0]} opacity={0.6} scale={40} blur={2} far={4} color="#000" />
+                <ContactShadows position={[0, 0.0, 0]} opacity={0.6} scale={15} blur={1.5} far={2} color="#000" />
                 
                 <OrbitControls 
                     enablePan={false} 

@@ -1,25 +1,10 @@
 // ChapterTwoSeven.jsx Imports
-import React, { useState } from 'react';
+import React from 'react';
 import CustomVideoPlayer from '../components/CustomVideoPlayer';
 import SimRace3D from '../components/SimRace3D';
+import SimCyclist3DContainer from '../components/SimCyclist3D';
 
 const ChapterTwoSeven = () => {
-  // Power Lifter State
-  const [liftState, setLiftState] = useState('idle'); // 'idle', 'lifting-slow', 'lifting-fast'
-  const [elapsedTime, setElapsedTime] = useState('?');
-  const [powerGenerated, setPowerGenerated] = useState('?');
-
-  const startLift = (speed) => {
-    setLiftState(`lifting-${speed}`);
-    setElapsedTime(speed === 'slow' ? '10 s' : '2 s');
-    setPowerGenerated(speed === 'slow' ? '200 W' : '1000 W');
-  };
-
-  const resetLift = () => {
-    setLiftState('idle');
-    setElapsedTime('?');
-    setPowerGenerated('?');
-  };
 
   return (
     <div className="ui-grid" id="view-chapter-2.7">
@@ -99,55 +84,10 @@ const ChapterTwoSeven = () => {
         </div>
       </article>
 
-      {/* Power Race Simulation */}
-      <article className="glass-card fade-in" style={{ animationDelay: '0.5s', gridColumn: '1 / -1', background: 'linear-gradient(135deg, #1e293b, #0f172a)', border: '4px solid #10b981', color: 'white' }}>
-         <h2 style={{ textAlign: 'center', color: '#34d399', marginBottom: '2rem' }}>⚡ Interactive Mod: The Power Lifter</h2>
-         <p style={{ textAlign: 'center', color: '#94a3b8', marginBottom: '2rem' }}>Select a speed to lift the 200kg mass to a height of 1 meter. Performing <strong>2000 Joules</strong> of work. Watch the Power output change depending on speed!</p>
-
-         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', justifyContent: 'center' }}>
-            <div style={{ flex: '1 1 40%', background: '#334155', padding: '2rem', borderRadius: '1rem', border: 'inset 4px #475569', display: 'flex', flexDirection: 'column' }}>
-               <h3 style={{ margin: 0, color: '#fbbf24', textAlign: 'center' }}>Lift the weight!</h3>
-               <p style={{ textAlign: 'center', color: '#94a3b8', fontSize: '0.9rem' }}>Work = Force (2000N) × Height (1m) = 2000J</p>
-               
-               <div style={{ position: 'relative', height: '250px', background: '#0f172a', borderRadius: '1rem', marginTop: '1rem', border: '2px solid #475569', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
-                   
-                   {/* Visual Lift Scene */}
-                   <div style={{ flex: 1, position: 'relative' }}>
-                       {/* Hook/Crane line */}
-                       <div style={{ position: 'absolute', top: 0, left: '50%', width: '4px', background: '#64748b', transform: 'translateX(-50%)', 
-                           height: liftState === 'idle' ? '200px' : '40px',
-                           transition: liftState === 'lifting-slow' ? 'height 10s linear' : liftState === 'lifting-fast' ? 'height 2s linear' : 'height 0.5s cubic-bezier(0.4, 0, 0.2, 1)' 
-                       }}></div>
-                       {/* Weight Box */}
-                       <div style={{ position: 'absolute', left: '50%', transform: 'translateX(-50%)', width: '60px', height: '60px', background: '#eab308', borderRadius: '8px', border: '4px solid #ca8a04', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#713f12', fontWeight: 'bold', fontSize: '1.2rem',
-                           top: liftState === 'idle' ? '200px' : '40px',
-                           transition: liftState === 'lifting-slow' ? 'top 10s linear' : liftState === 'lifting-fast' ? 'top 2s linear' : 'top 0.5s cubic-bezier(0.4, 0, 0.2, 1)'
-                       }}>200kg</div>
-                       {/* Ground */}
-                       <div style={{ position: 'absolute', bottom: 0, width: '100%', height: '20px', background: '#334155', borderTop: '4px solid #475569' }}></div>
-                   </div>
-               </div>
-
-               <div style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem' }}>
-                   <button onClick={() => startLift('slow')} disabled={liftState !== 'idle'} style={{ flex: 1, padding: '1rem', background: liftState !== 'idle' ? '#64748b' : '#3b82f6', color: 'white', borderRadius: '8px', border: 'none', cursor: liftState !== 'idle' ? 'not-allowed' : 'pointer', fontWeight: 'bold', transition: 'background 0.2s' }}>SLOW LIFT (10s)</button>
-                   <button onClick={() => startLift('fast')} disabled={liftState !== 'idle'} style={{ flex: 1, padding: '1rem', background: liftState !== 'idle' ? '#64748b' : '#ef4444', color: 'white', borderRadius: '8px', border: 'none', cursor: liftState !== 'idle' ? 'not-allowed' : 'pointer', fontWeight: 'bold', transition: 'background 0.2s' }}>FAST LIFT (2s)</button>
-               </div>
-               <button onClick={resetLift} style={{ marginTop: '1rem', padding: '0.8rem', background: 'transparent', color: '#94a3b8', border: '2px solid #475569', borderRadius: '8px', cursor: 'pointer', fontWeight: 'bold', transition: 'all 0.2s' }} onMouseOver={(e) => {e.target.style.background='#334155'; e.target.style.color='white'}} onMouseOut={(e) => {e.target.style.background='transparent'; e.target.style.color='#94a3b8'}}>Drop Weight (Reset)</button>
-            </div>
-
-            <div style={{ flex: '1 1 40%', background: '#1e293b', padding: '2rem', borderRadius: '1rem', display: 'flex', flexDirection: 'column', gap: '1.5rem', border: '1px solid #334155' }}>
-                <div style={{ background: '#0f172a', padding: '1.5rem', borderRadius: '1rem', textAlign: 'center', border: '2px solid #3b82f6', transition: 'all 0.3s' }}>
-                    <div style={{ color: '#94a3b8', fontSize: '1rem', fontWeight: 'bold', textTransform: 'uppercase' }}>Time Taken (t)</div>
-                    <div style={{ color: elapsedTime === '?' ? '#64748b' : '#60a5fa', fontSize: '3rem', fontWeight: 'bold', transition: 'color 0.3s' }}>{elapsedTime}</div>
-                </div>
-
-                <div style={{ background: '#0f172a', padding: '1.5rem', borderRadius: '1rem', textAlign: 'center', border: '2px solid #10b981', transition: 'all 0.3s' }}>
-                    <div style={{ color: '#94a3b8', fontSize: '1rem', fontWeight: 'bold', textTransform: 'uppercase' }}>Power Generated (P = W/t)</div>
-                    <div style={{ color: powerGenerated === '?' ? '#64748b' : '#34d399', fontSize: '3rem', fontWeight: 'bold', transition: 'color 0.3s' }}>{powerGenerated}</div>
-                </div>
-            </div>
-         </div>
-      </article>
+      {/* Power Interactive Activities */}
+      <div style={{ gridColumn: '1 / -1', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+         <SimCyclist3DContainer />
+      </div>
 
       {/* Summary (What you have learnt) */}
       <article className="glass-card fade-in" style={{ animationDelay: '0.5s', gridColumn: '1 / -1', background: 'rgba(255, 255, 255, 0.95)', color: '#1e293b', border: '8px solid #fbfbb2', borderRadius: '3rem', padding: '3rem' }}>
