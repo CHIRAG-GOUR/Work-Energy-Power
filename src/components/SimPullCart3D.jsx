@@ -7,43 +7,6 @@ const Bullock3D = ({ isPulling, positionX }) => {
     const groupRef = useRef();
     const legsRef = useRef([]);
 
-    // Bull sound references
-    const bullSound = useRef(null);
-    const cartSound = useRef(null);
-
-    React.useEffect(() => {
-        // Using Audio objects pointing to the sounds folder
-        bullSound.current = new Audio('/sounds/bull.mp3');
-        bullSound.current.volume = 0.5;
-
-        cartSound.current = new Audio('/sounds/bullcart_creak.mp3');
-        cartSound.current.loop = true;
-        cartSound.current.volume = 0.3;
-
-        return () => {
-            if (bullSound.current) {
-                bullSound.current.pause();
-                bullSound.current = null;
-            }
-            if (cartSound.current) {
-                cartSound.current.pause();
-                cartSound.current = null;
-            }
-        };
-    }, []);
-
-    React.useEffect(() => {
-        if (isPulling) {
-            if (bullSound.current) {
-                bullSound.current.currentTime = 0;
-                bullSound.current.play().catch(e => console.log("Audio block: " + e));
-            }
-            if (cartSound.current) cartSound.current.play().catch(e => console.log("Audio block: " + e));
-        } else {
-            if (cartSound.current) cartSound.current.pause();
-        }
-    }, [isPulling]);
-
     useFrame((state, delta) => {
         if (groupRef.current) {
             groupRef.current.position.x = positionX;
@@ -249,14 +212,15 @@ export default function SimPullCartContainer() {
     // Audio SFX
     const cartAudioRef = useRef(null);
     const mooAudioRef = useRef(null);
+    const audioTimeoutRef = useRef(null);
 
     React.useEffect(() => {
-        cartAudioRef.current = new Audio('https://actions.google.com/sounds/v1/foley/wooden_cart_wheels_creaking.ogg');
+        cartAudioRef.current = new Audio('/sounds/bullcart_creak.mp3');
         cartAudioRef.current.loop = true;
         cartAudioRef.current.volume = 0.5;
 
-        mooAudioRef.current = new Audio('https://actions.google.com/sounds/v1/animals/cow_moo.ogg');
-        mooAudioRef.current.volume = 0.3;
+        mooAudioRef.current = new Audio('/sounds/bull.mp3');
+        mooAudioRef.current.volume = 0.5;
         
         return () => {
             if (cartAudioRef.current) {
@@ -267,6 +231,7 @@ export default function SimPullCartContainer() {
                 mooAudioRef.current.pause();
                 mooAudioRef.current.currentTime = 0;
             }
+            if (audioTimeoutRef.current) clearTimeout(audioTimeoutRef.current);
         };
     }, []);
 
@@ -281,7 +246,7 @@ export default function SimPullCartContainer() {
                     setIsPulling(false); // Auto stop at max distance
                     return maxDisplacement;
                 }
-                return prev + 2 * delta; // 2 m/s
+                return prev + 1 * delta; // Slower speed: 1 m/s
             });
         }
         
@@ -296,10 +261,13 @@ export default function SimPullCartContainer() {
             if (cartAudioRef.current) {
                 cartAudioRef.current.play().catch(e => console.warn('Audio play blocked:', e));
             }
-            if (displacement === 0 && mooAudioRef.current) {
-                mooAudioRef.current.currentTime = 0;
-                mooAudioRef.current.play().catch(e => console.warn('Audio play blocked:', e));
-            }
+            if (audioTimeoutRef.current) clearTimeout(audioTimeoutRef.current);
+            audioTimeoutRef.current = setTimeout(() => {
+                if (mooAudioRef.current) {
+                    mooAudioRef.current.currentTime = 0;
+                    mooAudioRef.current.play().catch(e => console.warn('Audio play blocked:', e));
+                }
+            }, 1500);
         } else {
             if (frameRef.current) cancelAnimationFrame(frameRef.current);
             lastTimeRef.current = null;
@@ -307,6 +275,10 @@ export default function SimPullCartContainer() {
             if (cartAudioRef.current) {
                 cartAudioRef.current.pause();
             }
+            if (mooAudioRef.current) {
+                mooAudioRef.current.pause();
+            }
+            if (audioTimeoutRef.current) clearTimeout(audioTimeoutRef.current);
         }
         return () => {
             if (frameRef.current) cancelAnimationFrame(frameRef.current);
@@ -326,6 +298,11 @@ export default function SimPullCartContainer() {
             cartAudioRef.current.pause();
             cartAudioRef.current.currentTime = 0;
         }
+        if (mooAudioRef.current) {
+            mooAudioRef.current.pause();
+            mooAudioRef.current.currentTime = 0;
+        }
+        if (audioTimeoutRef.current) clearTimeout(audioTimeoutRef.current);
     };
 
     const workDone = Math.floor(force * displacement);
