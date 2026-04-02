@@ -396,40 +396,38 @@ export default function SimCyclist3DContainer() {
 
     // Audio Refs
     const themeAudio = useRef(null);
-    const bikeAudio = useRef(null);
 
     useEffect(() => {
-        // Since we are mocking Downhill Domination theme, use placeholders or real links.
-        // User is expected to place these sounds in public/sounds folder or point to valid URIs
-        themeAudio.current = new Audio('/sounds/downhill_theme.mp3');
+        themeAudio.current = new Audio('/sounds/downhill2.mp3');
         themeAudio.current.loop = true;
         themeAudio.current.volume = 0.4;
-
-        bikeAudio.current = new Audio('/sounds/bike_chain.mp3');
-        bikeAudio.current.loop = true;
-        bikeAudio.current.volume = 0.5;
 
         return () => {
             if (themeAudio.current) {
                 themeAudio.current.pause();
-                themeAudio.current = null;
-            }
-            if (bikeAudio.current) {
-                bikeAudio.current.pause();
-                bikeAudio.current = null;
+                themeAudio.current.currentTime = 0;
             }
         };
     }, []);
 
     useEffect(() => {
-        if (isGenerating && themeAudio.current && bikeAudio.current) {
-            themeAudio.current.play().catch(e => console.log("Audio play blocked by browser interaction policy"));
-            bikeAudio.current.play().catch(e => console.log("Audio play blocked by browser interaction policy"));
+        if (isGenerating && themeAudio.current) {
+            themeAudio.current.play().catch(e => console.log("Audio play blocked:", e));
         } else {
-            if (themeAudio.current) themeAudio.current.pause();
-            if (bikeAudio.current) bikeAudio.current.pause();
+            if (themeAudio.current) {
+                themeAudio.current.pause();
+            }
         }
     }, [isGenerating]);
+
+    const handleToggleGenerate = () => {
+        if (!isGenerating && themeAudio.current) {
+            themeAudio.current.play().catch(e => console.log("Audio unlock error:", e));
+        } else if (isGenerating && themeAudio.current) {
+            themeAudio.current.pause();
+        }
+        setIsGenerating(!isGenerating);
+    };
 
     const targetPower = force * velocity; // Watts
 
@@ -455,8 +453,8 @@ export default function SimCyclist3DContainer() {
                     <input type="range" min="1" max="15" step="1" value={velocity} onChange={e => setVelocity(Number(e.target.value))} disabled={isGenerating} style={{ width: '100%', accentColor: '#38bdf8' }} />
                 </div>
 
-                <button 
-                    onClick={() => setIsGenerating(!isGenerating)} 
+                <button
+                    onClick={handleToggleGenerate}
                     style={{ padding: '1rem', fontSize: '1.2rem', fontWeight: 'bold', background: isGenerating ? '#ef4444' : '#0ea5e9', color: 'white', border: 'none', borderRadius: '1rem', cursor: 'pointer', boxShadow: isGenerating ? 'none' : '0 4px 0 #0369a1' }}
                 >
                     {isGenerating ? '🛑 STOP PEDALING' : '🚴‍♂️ START PEDALING'}
