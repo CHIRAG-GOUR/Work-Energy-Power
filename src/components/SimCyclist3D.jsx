@@ -47,24 +47,27 @@ const RiderModel = ({ pedalAngle }) => {
             if (nodes.mixamorigSpine2) nodes.mixamorigSpine2.rotation.x = Math.PI / 16;
             if (nodes.mixamorigNeck) nodes.mixamorigNeck.rotation.x = -Math.PI / 4; // Look up
             
-            // Shoulders standard
-            if (nodes.mixamorigLeftShoulder) nodes.mixamorigLeftShoulder.rotation.set(0, 0, 0);
-            if (nodes.mixamorigRightShoulder) nodes.mixamorigRightShoulder.rotation.set(0, 0, 0);
+            // Shoulders slightly forward
+            if (nodes.mixamorigLeftShoulder) nodes.mixamorigLeftShoulder.rotation.set(0.4, 0, -0.4);
+            if (nodes.mixamorigRightShoulder) nodes.mixamorigRightShoulder.rotation.set(0.4, 0, 0.4);
 
-            // Relaxed arms straight to the handlebars
+            // Grab Handlebars - Left Arm (Less downward bend to reach higher handlebars, slightly wider)
             if (nodes.mixamorigLeftArm) {
-                nodes.mixamorigLeftArm.rotation.set(1.2, 0, 0.1);
+                nodes.mixamorigLeftArm.rotation.set(1.4, -0.4, 0.5);
             }
             if (nodes.mixamorigLeftForeArm) {
-                nodes.mixamorigLeftForeArm.rotation.set(-0.5, 0, 0);
+                nodes.mixamorigLeftForeArm.rotation.set(-0.3, 0, 0.4);
             }
+            if (nodes.mixamorigLeftHand) nodes.mixamorigLeftHand.rotation.set(-0.2, -0.2, 0);
 
+            // Grab Handlebars - Right Arm (Symmetric mapping, slightly wider)
             if (nodes.mixamorigRightArm) {
-                nodes.mixamorigRightArm.rotation.set(1.2, 0, -0.1);
+                nodes.mixamorigRightArm.rotation.set(1.4, 0.4, -0.5);
             }
             if (nodes.mixamorigRightForeArm) {
-                nodes.mixamorigRightForeArm.rotation.set(-0.5, 0, 0);
+                nodes.mixamorigRightForeArm.rotation.set(-0.3, 0, -0.4);
             }
+            if (nodes.mixamorigRightHand) nodes.mixamorigRightHand.rotation.set(-0.2, 0.2, 0);
         }
     }, [scene, nodes]);
 
@@ -195,9 +198,9 @@ const BikeGenerator = ({ force, velocity, isGenerating }) => {
                     <meshBasicMaterial color="#000000" />
                 </mesh>
 
-                {/* Handlebars (Moved Up to reach hands naturally) */}
+                {/* Handlebars (Moved Up to reach hands, made wider) */}
                 <mesh position={[0.65, 1.65, 0]} rotation={[Math.PI / 2, 0, 0]} castShadow receiveShadow>
-                    <cylinderGeometry args={[0.03, 0.03, 0.5]} />
+                    <cylinderGeometry args={[0.03, 0.03, 0.9]} />
                     <meshBasicMaterial color="#000000" />
                 </mesh>
 
