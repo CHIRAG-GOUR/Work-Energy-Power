@@ -53,19 +53,19 @@ const RiderModel = ({ pedalAngle }) => {
 
             // Bring arms forward to the handlebars
             if (nodes.mixamorigLeftArm) {
-                nodes.mixamorigLeftArm.rotation.set(1.2, -0.5, 0.8); // X rolls, Y swings forward, Z points down
+                nodes.mixamorigLeftArm.rotation.set(1.4, -0.4, 0.3); // X and Z bring arm forward and down
             }
             if (nodes.mixamorigLeftForeArm) {
-                nodes.mixamorigLeftForeArm.rotation.set(-0.4, 0, 0); // Bend elbow inwards
+                nodes.mixamorigLeftForeArm.rotation.set(-0.3, 0, 0.4); 
             }
             if (nodes.mixamorigLeftHand) nodes.mixamorigLeftHand.rotation.set(-0.2, -0.2, 0);
 
             // Grab Handlebars - Right Arm
             if (nodes.mixamorigRightArm) {
-                nodes.mixamorigRightArm.rotation.set(1.2, 0.5, -0.8); 
+                nodes.mixamorigRightArm.rotation.set(1.4, 0.4, -0.3); 
             }
             if (nodes.mixamorigRightForeArm) {
-                nodes.mixamorigRightForeArm.rotation.set(-0.4, 0, 0); 
+                nodes.mixamorigRightForeArm.rotation.set(-0.3, 0, -0.4); 
             }
             if (nodes.mixamorigRightHand) nodes.mixamorigRightHand.rotation.set(-0.2, 0.2, 0);
         }
