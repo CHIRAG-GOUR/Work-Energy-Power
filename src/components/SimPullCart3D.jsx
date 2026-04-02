@@ -215,11 +215,11 @@ export default function SimPullCartContainer() {
     const audioTimeoutRef = useRef(null);
 
     React.useEffect(() => {
-        cartAudioRef.current = new Audio('/sounds/Bull cart.mp3');
+        cartAudioRef.current = new Audio('/sounds/bullcart.mp3');
         cartAudioRef.current.loop = true;
         cartAudioRef.current.volume = 0.5;
 
-        mooAudioRef.current = new Audio('/sounds/bull sound.mp3');
+        mooAudioRef.current = new Audio('/sounds/bull.mp3');
         mooAudioRef.current.volume = 0.5;
         
         return () => {
@@ -259,13 +259,18 @@ export default function SimPullCartContainer() {
             frameRef.current = requestAnimationFrame(updateSimulation);
             // Play sounds
             if (cartAudioRef.current) {
-                cartAudioRef.current.play().catch(e => console.warn('Audio play blocked:', e));
+                const playPromise = cartAudioRef.current.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(e => console.warn('Audio play blocked:', e));
+                }
             }
             if (audioTimeoutRef.current) clearTimeout(audioTimeoutRef.current);
             audioTimeoutRef.current = setTimeout(() => {
-                if (mooAudioRef.current) {
-                    mooAudioRef.current.currentTime = 0;
-                    mooAudioRef.current.play().catch(e => console.warn('Audio play blocked:', e));
+                if (isPulling && mooAudioRef.current) { // Check isPulling again just in case
+                    const playPromise = mooAudioRef.current.play();
+                    if (playPromise !== undefined) {
+                        playPromise.catch(e => console.warn('Audio play blocked:', e));
+                    }
                 }
             }, 1500);
         } else {
@@ -287,6 +292,16 @@ export default function SimPullCartContainer() {
 
     const handleToggle = () => {
         if (displacement < maxDisplacement) {
+            if (!isPulling) {
+                // If we are starting, initialize/unlock the audio files directly from the click handler
+                if (cartAudioRef.current) {
+                    cartAudioRef.current.play().catch((e) => console.log('Cart Audio unlock error:', e));
+                }
+            } else {
+                // If pausing from the click handler
+                if (cartAudioRef.current) cartAudioRef.current.pause();
+                if (mooAudioRef.current) mooAudioRef.current.pause();
+            }
             setIsPulling(prev => !prev);
         }
     };
