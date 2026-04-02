@@ -51,23 +51,23 @@ const RiderModel = ({ pedalAngle }) => {
             if (nodes.mixamorigLeftShoulder) nodes.mixamorigLeftShoulder.rotation.set(0.4, 0, -0.4);
             if (nodes.mixamorigRightShoulder) nodes.mixamorigRightShoulder.rotation.set(0.4, 0, 0.4);
 
-            // Grab Handlebars - Left Arm (Reach FORWARD and slightly inward)
+            // Grab Handlebars - Left Arm (Reach FORWARD)
             if (nodes.mixamorigLeftArm) {
-                nodes.mixamorigLeftArm.rotation.set(-1.2, 0.2, 0.3); // Negative X brings arm forward
+                nodes.mixamorigLeftArm.rotation.set(1.2, 0, 0.5); // Positive X brings arm forward, Z slightly outward
             }
             if (nodes.mixamorigLeftForeArm) {
-                nodes.mixamorigLeftForeArm.rotation.set(-0.5, 0, 0.2); // Bend elbow
+                nodes.mixamorigLeftForeArm.rotation.set(0.5, 0, 0); // Bend elbow
             }
-            if (nodes.mixamorigLeftHand) nodes.mixamorigLeftHand.rotation.set(-0.2, -0.2, 0);
+            if (nodes.mixamorigLeftHand) nodes.mixamorigLeftHand.rotation.set(0, 0, 0);
 
-            // Grab Handlebars - Right Arm (Reach FORWARD and slightly inward)
+            // Grab Handlebars - Right Arm
             if (nodes.mixamorigRightArm) {
-                nodes.mixamorigRightArm.rotation.set(-1.2, -0.2, -0.3); // Negative X brings arm forward
+                nodes.mixamorigRightArm.rotation.set(1.2, 0, -0.5); 
             }
             if (nodes.mixamorigRightForeArm) {
-                nodes.mixamorigRightForeArm.rotation.set(-0.5, 0, -0.2); // Bend elbow
+                nodes.mixamorigRightForeArm.rotation.set(0.5, 0, 0); 
             }
-            if (nodes.mixamorigRightHand) nodes.mixamorigRightHand.rotation.set(-0.2, 0.2, 0);
+            if (nodes.mixamorigRightHand) nodes.mixamorigRightHand.rotation.set(0, 0, 0);
         }
     }, [scene, nodes]);
 
@@ -189,7 +189,7 @@ const BikeGenerator = ({ force, velocity, isGenerating }) => {
                 <Line points={[[-1, 0.1, 0], [-0.3, 0.9, 0]]} color="#000000" lineWidth={10} visible={true} />
                 {/* Front fork */}
                 <Line points={[[0.7, 0.9, 0], [1, 0.1, 0]]} color="#000000" lineWidth={8} visible={true} />
-                <Line points={[[0.65, 1.65, 0], [0.7, 0.9, 0]]} color="#000000" lineWidth={8} visible={true} /> {/* Stem raised taller and moved forward */}
+                <Line points={[[0.65, 1.5, 0], [0.7, 0.9, 0]]} color="#000000" lineWidth={8} visible={true} /> {/* Stem height down to normal */}
                 <Line points={[[-0.3, 0.9, 0], [-0.35, 1.1, 0]]} color="#000000" lineWidth={10} visible={true} /> {/* Seat post */}
 
                 {/* Seat */}
@@ -198,14 +198,14 @@ const BikeGenerator = ({ force, velocity, isGenerating }) => {
                     <meshBasicMaterial color="#000000" />
                 </mesh>
 
-                {/* Handlebars (Moved Up to reach hands, made wider) */}
-                <mesh position={[0.65, 1.65, 0]} rotation={[Math.PI / 2, 0, 0]} castShadow receiveShadow>
+                {/* Handlebars */}
+                <mesh position={[0.65, 1.5, 0]} rotation={[Math.PI / 2, 0, 0]} castShadow receiveShadow>
                     <cylinderGeometry args={[0.03, 0.03, 0.9]} />
                     <meshBasicMaterial color="#000000" />
                 </mesh>
 
                 {/* Proper Headlight Mounted on Handlebars - Visible from all sides */}
-                <group position={[0.75, 1.65, 0]}>
+                <group position={[0.75, 1.5, 0]}>
                     <mesh rotation={[0, 0, -Math.PI / 2]} castShadow receiveShadow>
                         <cylinderGeometry args={[0.08, 0.08, 0.15, 16]} />
                         <meshBasicMaterial color="#000000" />
