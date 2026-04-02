@@ -51,23 +51,23 @@ const RiderModel = ({ pedalAngle }) => {
             if (nodes.mixamorigLeftShoulder) nodes.mixamorigLeftShoulder.rotation.set(0.4, 0, -0.4);
             if (nodes.mixamorigRightShoulder) nodes.mixamorigRightShoulder.rotation.set(0.4, 0, 0.4);
 
-            // Grab Handlebars - Left Arm (Reach FORWARD)
+            // Bring arms forward to the handlebars
             if (nodes.mixamorigLeftArm) {
-                nodes.mixamorigLeftArm.rotation.set(1.2, 0, 0.5); // Positive X brings arm forward, Z slightly outward
+                nodes.mixamorigLeftArm.rotation.set(1.2, -0.5, 0.8); // X rolls, Y swings forward, Z points down
             }
             if (nodes.mixamorigLeftForeArm) {
-                nodes.mixamorigLeftForeArm.rotation.set(0.5, 0, 0); // Bend elbow
+                nodes.mixamorigLeftForeArm.rotation.set(-0.4, 0, 0); // Bend elbow inwards
             }
-            if (nodes.mixamorigLeftHand) nodes.mixamorigLeftHand.rotation.set(0, 0, 0);
+            if (nodes.mixamorigLeftHand) nodes.mixamorigLeftHand.rotation.set(-0.2, -0.2, 0);
 
             // Grab Handlebars - Right Arm
             if (nodes.mixamorigRightArm) {
-                nodes.mixamorigRightArm.rotation.set(1.2, 0, -0.5); 
+                nodes.mixamorigRightArm.rotation.set(1.2, 0.5, -0.8); 
             }
             if (nodes.mixamorigRightForeArm) {
-                nodes.mixamorigRightForeArm.rotation.set(0.5, 0, 0); 
+                nodes.mixamorigRightForeArm.rotation.set(-0.4, 0, 0); 
             }
-            if (nodes.mixamorigRightHand) nodes.mixamorigRightHand.rotation.set(0, 0, 0);
+            if (nodes.mixamorigRightHand) nodes.mixamorigRightHand.rotation.set(-0.2, 0.2, 0);
         }
     }, [scene, nodes]);
 
