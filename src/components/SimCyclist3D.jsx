@@ -37,44 +37,45 @@ const RiderModel = ({ pedalAngle }) => {
             }
         });
 
-        // Correct the root positioning and set static upper body posture (bending forward to handlebars)
         if (nodes.mixamorigRightLeg) {
             scene.rotation.y = Math.PI / 2; // Face forward
-            
-            // Bend spine forward
-            if (nodes.mixamorigSpine) nodes.mixamorigSpine.rotation.x = Math.PI / 6;
-            if (nodes.mixamorigSpine1) nodes.mixamorigSpine1.rotation.x = Math.PI / 8;
-            if (nodes.mixamorigSpine2) nodes.mixamorigSpine2.rotation.x = Math.PI / 16;
-            if (nodes.mixamorigNeck) nodes.mixamorigNeck.rotation.x = -Math.PI / 4; // Look up
-            
-            // Shoulders slightly forward
-            if (nodes.mixamorigLeftShoulder) nodes.mixamorigLeftShoulder.rotation.set(0.4, 0, -0.4);
-            if (nodes.mixamorigRightShoulder) nodes.mixamorigRightShoulder.rotation.set(0.4, 0, 0.4);
-
-            // Grab Handlebars - Left Arm (Less downward bend to reach higher handlebars, slightly wider)
-            if (nodes.mixamorigLeftArm) {
-                nodes.mixamorigLeftArm.rotation.set(1.4, -0.4, 0.5);
-            }
-            if (nodes.mixamorigLeftForeArm) {
-                nodes.mixamorigLeftForeArm.rotation.set(-0.3, 0, 0.4);
-            }
-            if (nodes.mixamorigLeftHand) nodes.mixamorigLeftHand.rotation.set(-0.2, -0.2, 0);
-
-            // Grab Handlebars - Right Arm (Symmetric mapping, slightly wider)
-            if (nodes.mixamorigRightArm) {
-                nodes.mixamorigRightArm.rotation.set(1.4, 0.4, -0.5);
-            }
-            if (nodes.mixamorigRightForeArm) {
-                nodes.mixamorigRightForeArm.rotation.set(-0.3, 0, -0.4);
-            }
-            if (nodes.mixamorigRightHand) nodes.mixamorigRightHand.rotation.set(-0.2, 0.2, 0);
         }
     }, [scene, nodes]);
 
     useFrame(() => {
         if (!nodes || !nodes.mixamorigLeftUpLeg) return;
         
-        // Procedurally animate legs based on the pedal crank angle
+        // --- Enforce Static Upper Body IK every frame ---
+        
+        // Bend spine forward
+        if (nodes.mixamorigSpine) nodes.mixamorigSpine.rotation.x = Math.PI / 6;
+        if (nodes.mixamorigSpine1) nodes.mixamorigSpine1.rotation.x = Math.PI / 8;
+        if (nodes.mixamorigSpine2) nodes.mixamorigSpine2.rotation.x = Math.PI / 16;
+        if (nodes.mixamorigNeck) nodes.mixamorigNeck.rotation.x = -Math.PI / 4; // Look up
+        
+        // Shoulders slightly forward
+        if (nodes.mixamorigLeftShoulder) nodes.mixamorigLeftShoulder.rotation.set(0.4, 0, -0.4);
+        if (nodes.mixamorigRightShoulder) nodes.mixamorigRightShoulder.rotation.set(0.4, 0, 0.4);
+
+        // Grab Handlebars - Left Arm
+        if (nodes.mixamorigLeftArm) {
+            nodes.mixamorigLeftArm.rotation.set(1.4, -0.4, 0.5);
+        }
+        if (nodes.mixamorigLeftForeArm) {
+            nodes.mixamorigLeftForeArm.rotation.set(-0.3, 0, 0.4);
+        }
+        if (nodes.mixamorigLeftHand) nodes.mixamorigLeftHand.rotation.set(-0.2, -0.2, 0);
+
+        // Grab Handlebars - Right Arm
+        if (nodes.mixamorigRightArm) {
+            nodes.mixamorigRightArm.rotation.set(1.4, 0.4, -0.5);
+        }
+        if (nodes.mixamorigRightForeArm) {
+            nodes.mixamorigRightForeArm.rotation.set(-0.3, 0, -0.4);
+        }
+        if (nodes.mixamorigRightHand) nodes.mixamorigRightHand.rotation.set(-0.2, 0.2, 0);
+
+        // --- Procedurally animate legs based on pedal crank angle ---
         const crankR = 0.25; 
         
         // Left Leg IK approx
