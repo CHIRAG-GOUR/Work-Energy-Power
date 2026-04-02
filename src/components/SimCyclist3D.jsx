@@ -394,6 +394,43 @@ export default function SimCyclist3DContainer() {
     const [velocity, setVelocity] = useState(5); // m/s
     const [isGenerating, setIsGenerating] = useState(false);
 
+    // Audio Refs
+    const themeAudio = useRef(null);
+    const bikeAudio = useRef(null);
+
+    useEffect(() => {
+        // Since we are mocking Downhill Domination theme, use placeholders or real links.
+        // User is expected to place these sounds in public/sounds folder or point to valid URIs
+        themeAudio.current = new Audio('/sounds/downhill_theme.mp3');
+        themeAudio.current.loop = true;
+        themeAudio.current.volume = 0.4;
+
+        bikeAudio.current = new Audio('/sounds/bike_chain.mp3');
+        bikeAudio.current.loop = true;
+        bikeAudio.current.volume = 0.5;
+
+        return () => {
+            if (themeAudio.current) {
+                themeAudio.current.pause();
+                themeAudio.current = null;
+            }
+            if (bikeAudio.current) {
+                bikeAudio.current.pause();
+                bikeAudio.current = null;
+            }
+        };
+    }, []);
+
+    useEffect(() => {
+        if (isGenerating && themeAudio.current && bikeAudio.current) {
+            themeAudio.current.play().catch(e => console.log("Audio play blocked by browser interaction policy"));
+            bikeAudio.current.play().catch(e => console.log("Audio play blocked by browser interaction policy"));
+        } else {
+            if (themeAudio.current) themeAudio.current.pause();
+            if (bikeAudio.current) bikeAudio.current.pause();
+        }
+    }, [isGenerating]);
+
     const targetPower = force * velocity; // Watts
 
     return (

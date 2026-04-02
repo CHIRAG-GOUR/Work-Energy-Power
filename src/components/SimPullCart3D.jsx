@@ -7,6 +7,43 @@ const Bullock3D = ({ isPulling, positionX }) => {
     const groupRef = useRef();
     const legsRef = useRef([]);
 
+    // Bull sound references
+    const bullSound = useRef(null);
+    const cartSound = useRef(null);
+
+    React.useEffect(() => {
+        // Using Audio objects pointing to the sounds folder
+        bullSound.current = new Audio('/sounds/bull.mp3');
+        bullSound.current.volume = 0.5;
+
+        cartSound.current = new Audio('/sounds/bullcart_creak.mp3');
+        cartSound.current.loop = true;
+        cartSound.current.volume = 0.3;
+
+        return () => {
+            if (bullSound.current) {
+                bullSound.current.pause();
+                bullSound.current = null;
+            }
+            if (cartSound.current) {
+                cartSound.current.pause();
+                cartSound.current = null;
+            }
+        };
+    }, []);
+
+    React.useEffect(() => {
+        if (isPulling) {
+            if (bullSound.current) {
+                bullSound.current.currentTime = 0;
+                bullSound.current.play().catch(e => console.log("Audio block: " + e));
+            }
+            if (cartSound.current) cartSound.current.play().catch(e => console.log("Audio block: " + e));
+        } else {
+            if (cartSound.current) cartSound.current.pause();
+        }
+    }, [isPulling]);
+
     useFrame((state, delta) => {
         if (groupRef.current) {
             groupRef.current.position.x = positionX;
