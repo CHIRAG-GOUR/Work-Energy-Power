@@ -53,15 +53,24 @@ function createStatDisplay(parent, label, unit, color) {
 // ============================================================
 export function initSim9() {
   const container = document.getElementById('sim9-canvas');
+  const controlsContainer = document.getElementById('sim9-controls');
   if (!container) return () => {};
   container.innerHTML = '';
+  if (controlsContainer) controlsContainer.innerHTML = '';
 
   const canvas = createSimCanvas(container, 500, 250);
+
   const ctx = canvas.getContext('2d');
 
   const controls = document.createElement('div');
-  controls.style.cssText = 'position:absolute;bottom:8px;left:8px;right:8px;z-index:10;';
-  container.appendChild(controls);
+  controls.style.cssText = 'padding: 8px; z-index: 10; margin-top: auto; display: flex; flex-direction: column; gap: 8px;';
+  
+  if (controlsContainer) {
+    controlsContainer.appendChild(controls);
+  } else {
+    controls.style.cssText = 'position:absolute;bottom:8px;left:8px;right:8px;z-index:10;';
+    container.appendChild(controls);
+  }
 
   const massSlider = createSlider(controls, 'Mass (kg)', 1, 20, 5, 1, '#8b5cf6');
   const velSlider = createSlider(controls, 'Velocity (m/s)', 1, 15, 5, 1, '#06b6d4');
@@ -149,15 +158,24 @@ export function initSim9() {
 // ============================================================
 export function initSim10() {
   const container = document.getElementById('sim10-canvas');
+  const controlsContainer = document.getElementById('sim10-controls');
   if (!container) return () => {};
   container.innerHTML = '';
+  if (controlsContainer) controlsContainer.innerHTML = '';
 
   const canvas = createSimCanvas(container, 500, 250);
+
   const ctx = canvas.getContext('2d');
 
   const controls = document.createElement('div');
-  controls.style.cssText = 'position:absolute;bottom:8px;left:8px;right:8px;z-index:10;';
-  container.appendChild(controls);
+  controls.style.cssText = 'padding: 8px; z-index: 10; margin-top: auto; display: flex; flex-direction: column; gap: 8px;';
+  
+  if (controlsContainer) {
+    controlsContainer.appendChild(controls);
+  } else {
+    controls.style.cssText = 'position:absolute;bottom:8px;left:8px;right:8px;z-index:10;';
+    container.appendChild(controls);
+  }
 
   const velSlider = createSlider(controls, 'Velocity', 1, 20, 5, 1, '#06b6d4');
 

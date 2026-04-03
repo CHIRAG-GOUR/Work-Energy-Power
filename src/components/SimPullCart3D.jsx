@@ -83,7 +83,7 @@ const Bullock3D = ({ isPulling, positionX }) => {
     );
 };
 
-const Cart3D = ({ isPulling, positionX }) => {
+const Cart3D = ({ isPulling, positionX, mass }) => {
     const groupRef = useRef();
     const wheelsRef = useRef([]);
 
@@ -127,7 +127,20 @@ const Cart3D = ({ isPulling, positionX }) => {
                 <boxGeometry args={[2.0, 0.05, 0.8]} />
                 <meshStandardMaterial color="#451a03" roughness={0.9} />
             </mesh>
-
+            {/* Cargo Box visually scales with mass */}
+            <group position={[0, 1.1 + (0.6 * (mass / 125)) / 2 - 0.3, 0]}>
+                <mesh castShadow receiveShadow>
+                    <boxGeometry args={[0.8, 0.6 * (mass / 125), 0.8]} />
+                    <meshStandardMaterial color="#f59e0b" />
+                </mesh>
+                {/* Display weight on the cargo box */}
+                <Text position={[0, 0, 0.41]} fontSize={0.2} color="#451a03" anchorX="center" anchorY="middle" fontWeight="bold">
+                    {mass} kg
+                </Text>
+                <Text position={[0, 0, -0.41]} rotation={[0, Math.PI, 0]} fontSize={0.2} color="#451a03" anchorX="center" anchorY="middle" fontWeight="bold">
+                    {mass} kg
+                </Text>
+            </group>
             {/* Wheels */}
             {[
                 [0, 0.4, 0.65],
@@ -153,11 +166,7 @@ const Cart3D = ({ isPulling, positionX }) => {
                 </mesh>
             ))}
             
-            {/* Cargo Box */}
-            <mesh position={[0, 1.1, 0]} castShadow receiveShadow>
-                <boxGeometry args={[0.8, 0.6, 0.8]} />
-                <meshStandardMaterial color="#f59e0b" />
-            </mesh>
+            {/* Old Cargo box removed, rope string goes here */}
             {/* Rope to bullock center */}
             <mesh position={[-1.2, 1.0, 0]} rotation={[0, 0, Math.PI / 2]} castShadow receiveShadow>
                 <cylinderGeometry args={[0.02, 0.02, 2.4, 8]} />
@@ -167,13 +176,13 @@ const Cart3D = ({ isPulling, positionX }) => {
     );
 };
 
-const Scene3D = ({ isPulling, displacement }) => {
+const Scene3D = ({ isPulling, displacement, mass }) => {
     return (
         <group>
             {/* Let's have the cart move from right to left */}
-            <group position={[4, 0, 0]}> {/* Offset start position to right */}
-                <Bullock3D isPulling={isPulling} positionX={-displacement} />
-                <Cart3D isPulling={isPulling} positionX={-displacement} />
+            <group position={[4, 0, 0]}> {/* Offset start position to right */} 
+                <Bullock3D isPulling={isPulling} positionX={-displacement} />   
+                <Cart3D isPulling={isPulling} positionX={-displacement} mass={mass} />
                 
                 {/* Distance Markers along ground */}
                 {Array.from({ length: 21 }).map((_, i) => (
@@ -201,9 +210,10 @@ const Scene3D = ({ isPulling, displacement }) => {
 export default function SimPullCartContainer() {
     const [isPulling, setIsPulling] = useState(false);
     const [displacement, setDisplacement] = useState(0);
-    const force = 300; // Newtons
+    const [mass, setMass] = useState(50); // kg
+    const force = Math.round(mass * 9.8 * 0.15); // Newtons
     const maxDisplacement = 20;
-    
+
     // Manage animation frame outside canvas via RAF, or just use simple useEffect interval/timeout for React state
     // Since we need smooth React state updates for the UI overlay:
     const frameRef = useRef();
@@ -246,7 +256,8 @@ export default function SimPullCartContainer() {
                     setIsPulling(false); // Auto stop at max distance
                     return maxDisplacement;
                 }
-                return prev + 1 * delta; // Slower speed: 1 m/s
+                const speed = 200 / mass;
+                return prev + speed * delta; // Speed changes based on mass
             });
         }
         
@@ -340,7 +351,7 @@ export default function SimPullCartContainer() {
                     shadow-camera-bottom={-10}
                 />
                 
-                <Scene3D isPulling={isPulling} displacement={displacement} />
+                <Scene3D isPulling={isPulling} displacement={displacement} mass={mass} />
 
                 {/* Sky and Ground Env */}
                 <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]} receiveShadow>
@@ -362,6 +373,10 @@ export default function SimPullCartContainer() {
             <div style={{ position: 'absolute', top: '20px', left: '20px', zIndex: 10, display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <div style={{ background: 'rgba(255,255,255,0.9)', padding: '1rem', borderRadius: '1rem', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', minWidth: '200px', border: '2px solid #e2e8f0' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                        <span style={{ fontWeight: 'bold', color: '#64748b' }}>Mass:</span>
+                        <span style={{ fontWeight: '900', color: '#8b5cf6' }}>{mass} kg</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
                         <span style={{ fontWeight: 'bold', color: '#64748b' }}>Force:</span>
                         <span style={{ fontWeight: '900', color: '#ef4444' }}>{force} N</span>
                     </div>
@@ -374,6 +389,11 @@ export default function SimPullCartContainer() {
                         <span style={{ fontWeight: 'bold', color: '#0f172a' }}>Work Done:</span>
                         <span style={{ fontWeight: '900', color: '#10b981', fontSize: '1.2rem' }}>{workDone} J</span>
                     </div>
+                </div>
+
+                <div style={{ background: 'rgba(255,255,255,0.9)', padding: '1rem', borderRadius: '1rem', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+                    <label style={{ fontSize: '0.9rem', fontWeight: 'bold', color: '#475569', display: 'block', marginBottom: '0.5rem' }}>Cart Weight (kg)</label>
+                    <input type="range" min="10" max="300" step="10" value={mass} onChange={(e) => setMass(Number(e.target.value))} disabled={isPulling || displacement > 0} style={{ width: '100%', cursor: isPulling || displacement > 0 ? 'not-allowed' : 'pointer' }} />
                 </div>
 
                 <div style={{ display: 'flex', gap: '10px' }}>

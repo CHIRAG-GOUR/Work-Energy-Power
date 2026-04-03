@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import CustomVideoPlayer from '../components/CustomVideoPlayer';
 import SimPushWall3D from '../components/SimPushWall3D';
 
@@ -14,6 +14,7 @@ export default function ChapterOneOne() {
     const [isPushing, setIsPushing] = useState(false);
     const [targetType, setTargetType] = useState('wall'); // 'wall' or 'pebble'
     const [pebblePosition, setPebblePosition] = useState(0);
+    const pushIntervalRef = useRef(null);
 
     // Drain stamina continuously if not clicking
     useEffect(() => {
@@ -26,19 +27,36 @@ export default function ChapterOneOne() {
         return () => clearInterval(timer);
     }, [wallStamina, isPushing]);
 
-    const handlePush = () => {
+    const startPushing = () => {
+        if (wallStamina === 0 && targetType === 'wall') return;
         setIsPushing(true);
-        setPushClicks(c => c + 1);
-        
-        if (wallStamina > 0) {
-            setWallStamina(s => Math.max(0, s - 5));
+        if (!pushIntervalRef.current) {
+            pushIntervalRef.current = setInterval(() => {
+                setPushClicks(c => c + 1);
+                setWallStamina(s => {
+                    const newS = Math.max(0, s - 5);
+                    if (newS === 0 && targetType === 'wall') {
+                        stopPushing();
+                    }
+                    return newS;
+                });
+                
+                setTargetType(currentType => {
+                    if (currentType === 'pebble') {
+                        setPebblePosition(p => Math.min(150, p + 2));
+                    }
+                    return currentType;
+                });
+            }, 100);
         }
+    };
 
-        if (targetType === 'pebble' && wallStamina > 0) {
-            setPebblePosition(p => Math.min(150, p + 5));
+    const stopPushing = () => {
+        setIsPushing(false);
+        if (pushIntervalRef.current) {
+            clearInterval(pushIntervalRef.current);
+            pushIntervalRef.current = null;
         }
-
-        setTimeout(() => setIsPushing(false), 150);
     };
     
     return (
@@ -220,12 +238,27 @@ export default function ChapterOneOne() {
                         </div>
 
                         <button 
-                            className="sim-btn" 
-                            onClick={handlePush}
+                            className="sim-btn"
+                            onPointerDown={(e) => {
+                                if(wallStamina > 0 || targetType !== 'wall') {
+                                    e.currentTarget.style.transform = 'translateY(8px)';
+                                    startPushing();
+                                }
+                            }}
+                            onPointerUp={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0px)';
+                                stopPushing();
+                            }}
+                            onPointerLeave={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0px)';
+                                stopPushing();
+                            }}
+                            onPointerCancel={(e) => {
+                                e.currentTarget.style.transform = 'translateY(0px)';
+                                stopPushing();
+                            }}
                             disabled={wallStamina === 0 && targetType === 'wall'}
                             style={{ padding: '1rem 3rem', fontSize: '1.5rem', borderRadius: '2rem', background: targetType === 'wall' ? '#ef4444' : '#3b82f6', color: 'white', cursor: (wallStamina === 0 && targetType === 'wall') ? 'not-allowed' : 'pointer', fontWeight: 'bold', boxShadow: `0 8px 0 ${targetType === 'wall' ? '#b91c1c' : '#1d4ed8'}`, border: 'none', transition: 'transform 0.1s' }}
-                            onMouseDown={e => {if(wallStamina > 0) e.currentTarget.style.transform = 'translateY(8px)'}}
-                            onMouseUp={e => {if(wallStamina > 0) e.currentTarget.style.transform = 'translateY(0px)'}}
                         >
                             PUSH! {pushClicks > 0 && `(${pushClicks})`}
                         </button>
@@ -260,6 +293,27 @@ export default function ChapterOneOne() {
                     </div>
                 </article>
             </div>
+
+            {/* PhET Activity Section */}
+            <article className="glass-card fade-in" style={{ animationDelay: '1.1s', gridColumn: '1 / -1', background: 'linear-gradient(145deg, #eff6ff, #dbeafe)', border: '2px solid #93c5fd', marginTop: '3rem' }}>
+                <div style={{ padding: '2rem', textAlign: 'center' }}>
+                    <h2 style={{ color: '#1e40af', fontSize: '2.5rem', marginBottom: '1rem' }}>Forces & Motion Basics</h2>
+                    <p style={{ color: '#3b82f6', fontSize: '1.2rem', marginBottom: '2rem', maxWidth: '800px', margin: '0 auto 2rem' }}>
+                        Explore the relationships between force, mass, and acceleration in this interactive sandbox! Toggle the values and see how applying net forces causes objects to move.
+                    </p>
+                    <div style={{ borderRadius: '1.5rem', overflow: 'hidden', boxShadow: '0 20px 40px rgba(37, 99, 235, 0.2)', background: 'white', border: '4px solid white' }}>
+                        <iframe 
+                            src="https://phet.colorado.edu/sims/html/forces-and-motion-basics/latest/forces-and-motion-basics_all.html" 
+                            width="100%" 
+                            height="600" 
+                            scrolling="no" 
+                            allowFullScreen
+                            style={{ border: 'none', display: 'block' }}
+                            title="PhET Forces and Motion Basics"
+                        ></iframe>
+                    </div>
+                </div>
+            </article>
         </div>
     );
 }

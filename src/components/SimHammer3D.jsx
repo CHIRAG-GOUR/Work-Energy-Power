@@ -6,17 +6,18 @@ import * as THREE from 'three';
 const Hammer = ({ dropHeight, isDropping, setIsDropping, setNailDepth, nailDepth }) => {
     const groupRef = useRef();
     const startY = dropHeight; // Varies from 2 to 6
-    const endY = 1.0; // Surface of the nail head (approx)
+    // The nail top starts at 1.5, and goes down by nailDepth.
+    // The hammer head extends 0.2 units down from its center, so it must stop 0.2 units above the nail top.
+    const endY = 1.7 - nailDepth;
     
     useFrame((state, delta) => {
         if (!groupRef.current) return;
 
         if (isDropping) {
             // Drop physics
-            const speed = 15; // Fast drop
+            const speed = 25; // Faster drop
             groupRef.current.position.y -= speed * delta;
             
-            // Rotation as it drops (optional flourish)
             groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, 0, 5 * delta);
 
             if (groupRef.current.position.y <= endY) {
@@ -31,30 +32,48 @@ const Hammer = ({ dropHeight, isDropping, setIsDropping, setNailDepth, nailDepth
                 const h = dropHeight - endY;
                 const PE = mass * g * h;
                 
-                // Map PE to nail displacement. Max PE ~ 100 J = 0.8m depth
-                const depthAmount = (PE / 100) * 0.8;
-                setNailDepth(prev => Math.min(prev + depthAmount, 0.9)); // Max depth 0.9
+                // Map PE to nail displacement. Max height drop is ~5m, PE ~ 100 J
+                // We want: 
+                // Low force (slider=3m): nail doesn't go fully down (e.g. 0.2 depth)
+                // Medium force (slider=4-5m): half nail goes down (e.g. 0.35 depth)
+                // Full force (slider=6m): full nail goes down (e.g. 0.55 depth)
+                // Max depth possible before hitting block is 0.55 (since nail top is 1.5, block top is 0.95)
+                const targetExtraDepth = (PE / 100) * 0.55; 
+                setNailDepth(prev => Math.min(prev + targetExtraDepth, 0.55));
             }
-        } else if (groupRef.current.position.y !== endY) {
-            // Idle state tracking the slider
-            groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, startY, 10 * delta);
-            // Angle the hammer slightly when hoisted
+        } else if (groupRef.current.position.y < startY) {
+            // After hitting, or when slider changes, gradually return to startY
+            groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, startY, 3 * delta);
+            groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, Math.PI / 8, 5 * delta);
+        } else {
+            // Idle state tracking the slider closely
+            groupRef.current.position.y = startY;
             groupRef.current.rotation.z = THREE.MathUtils.lerp(groupRef.current.rotation.z, Math.PI / 8, 5 * delta);
         }
     });
 
-    const ironMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#94a3b8', metalness: 0.8, roughness: 0.2 }), []);
-    const woodMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#b45309', roughness: 0.9 }), []);
+    const ironMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#64748b', metalness: 0.8, roughness: 0.3 }), []);
+    const woodMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#92400e', roughness: 0.9 }), []);
 
+    // A better hammer shape
     return (
-        <group ref={groupRef} position={[0, startY, 0]}>
-            {/* Hammer Head */}
-            <mesh position={[0.4, 0, 0]} material={ironMat} castShadow>
-                <boxGeometry args={[1.2, 0.6, 0.4]} />
-            </mesh>
+        <group ref={groupRef} position={[-0.05, startY, 0]}>
+            {/* Hammer Head (More realistic shape) */}
+            <group position={[0.4, 0, 0]}>
+                <mesh material={ironMat} castShadow>
+                     <cylinderGeometry args={[0.2, 0.2, 0.8, 16]} rotation={[0, 0, Math.PI / 2]} />
+                </mesh>
+                <mesh position={[-0.35, 0, 0]} material={ironMat} castShadow rotation={[0, 0, Math.PI / 2]}>
+                     <cylinderGeometry args={[0.2, 0.15, 0.3, 16]} />
+                </mesh>
+                <mesh position={[0.4, 0, 0]} material={ironMat} castShadow rotation={[0, 0, Math.PI / 2]}>
+                     {/* Claw side roughly */}
+                     <coneGeometry args={[0.05, 0.4, 16, 1, false, 0, Math.PI]} />
+                </mesh>
+            </group>
             {/* Hammer Handle */}
-            <mesh position={[-0.6, 0, 0]} rotation={[0, 0, Math.PI / 2]} material={woodMat} castShadow>
-                <cylinderGeometry args={[0.1, 0.1, 1.8, 16]} />
+            <mesh position={[-0.4, 0, 0]} rotation={[0, 0, Math.PI / 2]} material={woodMat} castShadow>
+                <cylinderGeometry args={[0.08, 0.12, 1.8, 16]} />
             </mesh>
         </group>
     );
@@ -66,21 +85,21 @@ const Nail = ({ depth }) => {
     useFrame((state, delta) => {
         if (!groupRef.current) return;
         // Smooth transition to target depth
-        const targetY = 1.0 - depth;
+        const targetY = 1.5 - depth;
         groupRef.current.position.y = THREE.MathUtils.lerp(groupRef.current.position.y, targetY, 15 * delta);
     });
 
-    const ironMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#cbd5e1', metalness: 0.9, roughness: 0.1 }), []);
+    const ironMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#94a3b8', metalness: 0.9, roughness: 0.1 }), []);
 
     return (
-        <group ref={groupRef} position={[0, 1.0, 0]}>
+        <group ref={groupRef} position={[0, 1.5, 0]}>
             {/* Nail Head */}
             <mesh position={[0, 0, 0]} material={ironMat} castShadow>
-                <cylinderGeometry args={[0.2, 0.2, 0.05, 16]} />
+                <cylinderGeometry args={[0.25, 0.25, 0.05, 16]} />
             </mesh>
-            {/* Nail Body */}
-            <mesh position={[0, -0.6, 0]} material={ironMat} castShadow>
-                <cylinderGeometry args={[0.05, 0.01, 1.2, 8]} />
+            {/* Nail Body (taller) */}
+            <mesh position={[0, -0.8, 0]} material={ironMat} castShadow>
+                <cylinderGeometry args={[0.06, 0.01, 1.6, 8]} />
             </mesh>
         </group>
     );
@@ -102,9 +121,9 @@ export default function SimHammer3D() {
 
     const mass = 2; // kg
     const g = 9.8; // m/s2
-    const currentHeight = heightSlider - 1; // Relative to nail surface
+    const currentHeight = Math.max(0, heightSlider - (1.5 - nailDepth)); // Relative to exact current nail surface
     const PE = Math.floor(mass * g * currentHeight);
-    const maxDepth = 0.9;
+    const maxDepth = 0.55;
     const isNailFlush = nailDepth >= maxDepth - 0.05;
 
     const handleDrop = () => {

@@ -124,22 +124,32 @@ const ChapterTwoThree = () => {
       </article>
 
       {/* Activity 1 (Simulation 9) */}
-      <article className="glass-card fade-in" style={{ animationDelay: '0.5s', gridColumn: '1 / -1', display: 'flex', flexWrap: 'wrap', gap: '2rem', background: 'linear-gradient(145deg, #fffbeb, #ccfbf1)', border: '1px solid #5eead4' }}>
-        <div style={{ flex: '1 1 45%', minWidth: '300px' }}>
+      <article className="glass-card fade-in" style={{ animationDelay: '0.5s', gridColumn: '1 / -1', display: 'flex', flexWrap: 'wrap', gap: '2rem', background: 'linear-gradient(145deg, #fffbeb, #ccfbf1)', border: '1px solid #5eead4', alignItems: 'stretch' }}>
+        <div style={{ flex: '1 1 45%', minWidth: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <h2 style={{ fontSize: '2rem', color: '#0f766e', marginBottom: '1rem' }}>Interactive: Mass vs Kinetic Energy</h2>
           <p style={{ color: '#115e59', fontSize: '1.05rem', lineHeight: '1.6' }}>Adjust the mass to see how kinetic energy scales linearly. Doubling the mass doubles the KE.</p>
+          <div id="sim9-controls" style={{ marginTop: '2rem' }}></div>
         </div>
-        <div id="sim9-canvas" style={{ flex: '1 1 45%', minWidth: '300px', background: 'rgba(248,250,252,0.5)', borderRadius: '1.5rem', overflow: 'hidden', minHeight: '300px', position: 'relative' }}>
+        <div id="sim9-canvas" style={{ flex: '1 1 45%', minWidth: '300px', background: 'rgba(248,250,252,0.5)', borderRadius: '1.5rem', overflow: 'hidden', minHeight: '350px', position: 'relative' }}>
         </div>
       </article>
 
       {/* Activity 2 (Simulation 10) */}
-      <article className="glass-card fade-in" style={{ animationDelay: '0.6s', gridColumn: '1 / -1', display: 'flex', flexWrap: 'wrap', gap: '2rem', background: 'linear-gradient(145deg, #fdf4ff, #fae8ff)', border: '1px solid #f0abfc' }}>
-        <div style={{ flex: '1 1 45%', minWidth: '300px' }}>
+      <article className="glass-card fade-in" style={{ animationDelay: '0.6s', gridColumn: '1 / -1', display: 'flex', flexWrap: 'wrap', gap: '2rem', background: 'linear-gradient(145deg, #fdf4ff, #fae8ff)', border: '1px solid #f0abfc', alignItems: 'stretch' }}>
+        <div style={{ flex: '1 1 45%', minWidth: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <h2 style={{ fontSize: '2rem', color: '#86198f', marginBottom: '1rem' }}>Interactive: Velocity vs Kinetic Energy</h2>
           <p style={{ color: '#701a75', fontSize: '1.05rem', lineHeight: '1.6' }}>Adjust the velocity to see the parabolic curve! Because velocity is squared in the formula, doubling velocity quadruples the Kinetic Energy.</p>
+          
+          <div style={{ background: 'rgba(255,255,255,0.7)', padding: '1rem', borderRadius: '12px', border: '2px dashed #f0abfc', margin: '1rem 0', color: '#86198f', textAlign: 'center' }}>
+            <span style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>Velocity from Kinetic Energy:</span><br/>
+            <span style={{ fontSize: '1.4rem', fontFamily: 'monospace', display: 'inline-block', marginTop: '0.5rem', fontWeight: 'bold' }}>
+              v = &radic;<span style={{ borderTop: '2px solid #86198f', paddingTop: '2px' }}>(2 &times; KE / m)</span>
+            </span>
+          </div>
+
+          <div id="sim10-controls" style={{ marginTop: '2rem' }}></div>
         </div>
-        <div id="sim10-canvas" style={{ flex: '1 1 45%', minWidth: '300px', background: 'rgba(248,250,252,0.5)', borderRadius: '1.5rem', overflow: 'hidden', minHeight: '300px', position: 'relative' }}>
+        <div id="sim10-canvas" style={{ flex: '1 1 45%', minWidth: '300px', background: 'rgba(248,250,252,0.5)', borderRadius: '1.5rem', overflow: 'hidden', minHeight: '350px', position: 'relative' }}>
         </div>
       </article>
 

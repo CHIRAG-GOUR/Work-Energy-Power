@@ -14,9 +14,10 @@ const Person3D = ({ isPushing, targetType, pebblePosition }) => {
 
   useFrame((state, delta) => {
     // Determine base position and rotation based on target and pushing state
-    const targetZ = targetType === 'wall' ? 2 : (2 - pebblePosition * 0.05);
-    const targetLean = isPushing ? 0.4 : 0.1;
-    const targetArmRot = isPushing ? -Math.PI / 2 + 0.2 : -Math.PI / 4;
+    const currentPebbleZ = -0.4 - (pebblePosition * 0.05);
+    const targetZ = targetType === 'wall' ? 0.7 : (currentPebbleZ + 1.0);
+    const targetLean = isPushing ? 0.35 : 0.1;
+    const targetArmRot = isPushing ? -Math.PI / 2 + 0.15 : -Math.PI / 6;
     
     // Smoothly interpolate
     if (groupRef.current) {
@@ -56,7 +57,7 @@ const Person3D = ({ isPushing, targetType, pebblePosition }) => {
   const shoeMat = useMemo(() => new THREE.MeshStandardMaterial({ color: '#0f172a', roughness: 0.8 }), []);
 
   return (
-    <group ref={groupRef} position={[0, 0, 2]} rotation={[0, Math.PI, 0]}> {/* Facing negative Z */}
+    <group ref={groupRef} position={[0, 0, 0.9]} rotation={[0, Math.PI, 0]}> {/* Facing negative Z */}
       {/* Torso container for leaning */}
       <group ref={torsoRef} position={[0, 1.2, 0]}>
         {/* Body */}
@@ -129,7 +130,7 @@ const Pebble3D = ({ pebblePosition }) => {
     const rockRef = useRef();
 
     useFrame((state, delta) => {
-        const targetZ = -0.5 - (pebblePosition * 0.05); // Move forward along Z
+        const targetZ = -0.4 - (pebblePosition * 0.05); // Move forward along Z
         if (rockRef.current) {
             rockRef.current.position.z = THREE.MathUtils.lerp(rockRef.current.position.z, targetZ, 10 * delta);
             // Roll the rock
@@ -138,7 +139,7 @@ const Pebble3D = ({ pebblePosition }) => {
     });
 
     return (
-        <mesh ref={rockRef} position={[0, 0.5, -0.5]} castShadow receiveShadow>
+        <mesh ref={rockRef} position={[0, 0.5, -0.4]} castShadow receiveShadow>
             <dodecahedronGeometry args={[0.5, 0]} />
             <meshStandardMaterial color="#64748b" roughness={0.8} />
         </mesh>

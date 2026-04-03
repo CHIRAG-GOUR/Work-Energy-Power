@@ -92,6 +92,9 @@ export default function ChapterTwoFour() {
                         <div style={{ textAlign: 'center', margin: '1.5rem 0' }}>
                             <div style={{ fontSize: '1.5rem', padding: '1rem', background: '#dbeafe', color: '#1e40af', borderRadius: '8px', display: 'inline-block', border: '2px solid #93c5fd' }}>
                                 Stored PEg: <strong>{PEg.toFixed(0)} Joules</strong>
+                                <div style={{ fontSize: '1rem', marginTop: '0.5rem', fontFamily: 'monospace', color: '#3b82f6' }}>
+                                    PE = {mass} kg × {g} m/s² × {height} m = {Math.round(PEg)} J
+                                </div>
                             </div>
                         </div>
 

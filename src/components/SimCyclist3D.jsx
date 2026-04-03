@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, Suspense } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Line, useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
@@ -14,72 +14,66 @@ const RiderModel = ({ pedalAngle }) => {
             if (child.isMesh) {
                 child.castShadow = true;
                 child.receiveShadow = true;
-                // Add color to the rider - giving them a bright cycling suit
                 if (child.material) {
-                    const newMat = child.material.clone();
-                    
-                    // Xbot typically has 'Alpha_Surface' and 'Alpha_Joints'
-                    if (child.name.includes('Joints')) {
-                        newMat.color = new THREE.Color("#1e293b"); // Dark joints like athletic wear
-                        newMat.roughness = 0.8;
-                        newMat.metalness = 0.1;
+                    const updateMat = (mat, isJoint) => {
+                        const newMat = mat.clone();
+                        if (isJoint) {
+                            newMat.color = new THREE.Color("#1e293b"); 
+                            newMat.roughness = 0.8;
+                            newMat.metalness = 0.1;
+                        } else {
+                            newMat.color = new THREE.Color("#f59e0b");
+                            newMat.roughness = 0.7;
+                            newMat.metalness = 0.1;
+                        }
+                        newMat.emissive = new THREE.Color("#000000"); 
+                        return newMat;
+                    };
+
+                    const isJoint = child.name.includes('Joints');
+                    if (Array.isArray(child.material)) {
+                        child.material = child.material.map(m => updateMat(m, isJoint));
                     } else {
-                        // The main body surface - color it like a cycling jersey/pants
-                        newMat.color = new THREE.Color("#f59e0b"); // Bright Yellow/Amber cycling suit
-                        newMat.roughness = 0.7;
-                        newMat.metalness = 0.1;
+                        child.material = updateMat(child.material, isJoint);
                     }
-                    
-                    // Reset emissive for normal look
-                    newMat.emissive = new THREE.Color("#000000"); 
-                    child.material = newMat;
                 }
             }
         });
 
+        // Face forward natively
         if (nodes.mixamorigRightLeg) {
-            scene.rotation.y = Math.PI / 2; // Face forward
+            scene.rotation.y = Math.PI / 2;
         }
     }, [scene, nodes]);
 
     useFrame(() => {
         if (!nodes || !nodes.mixamorigLeftUpLeg) return;
         
-        // --- Enforce Static Upper Body IK every frame ---
-        
         // Bend spine forward
         if (nodes.mixamorigSpine) nodes.mixamorigSpine.rotation.x = Math.PI / 6;
         if (nodes.mixamorigSpine1) nodes.mixamorigSpine1.rotation.x = Math.PI / 8;
         if (nodes.mixamorigSpine2) nodes.mixamorigSpine2.rotation.x = Math.PI / 16;
-        if (nodes.mixamorigNeck) nodes.mixamorigNeck.rotation.x = -Math.PI / 4; // Look up
+        if (nodes.mixamorigNeck) nodes.mixamorigNeck.rotation.x = -Math.PI / 4; 
         
-        // Shoulders slightly forward
-        if (nodes.mixamorigLeftShoulder) nodes.mixamorigLeftShoulder.rotation.set(0.4, 0, -0.4);
-        if (nodes.mixamorigRightShoulder) nodes.mixamorigRightShoulder.rotation.set(0.4, 0, 0.4);
+        // Original default arms (pointing somewhat forward/down, not perfectly on handles)
+        // Adjust shoulders to point forward and bend
+        if (nodes.mixamorigLeftShoulder) nodes.mixamorigLeftShoulder.rotation.set(Math.PI / 4, 0, -Math.PI / 8);
+        if (nodes.mixamorigRightShoulder) nodes.mixamorigRightShoulder.rotation.set(Math.PI / 4, 0, Math.PI / 8);
 
-        // Grab Handlebars - Left Arm
-        if (nodes.mixamorigLeftArm) {
-            nodes.mixamorigLeftArm.rotation.set(1.4, -0.4, 0.5);
-        }
-        if (nodes.mixamorigLeftForeArm) {
-            nodes.mixamorigLeftForeArm.rotation.set(-0.3, 0, 0.4);
-        }
-        if (nodes.mixamorigLeftHand) nodes.mixamorigLeftHand.rotation.set(-0.2, -0.2, 0);
+        // Adjust arms to reach down to handlebars
+        if (nodes.mixamorigLeftArm) nodes.mixamorigLeftArm.rotation.set(-1.0, 0, 0.4);
+        if (nodes.mixamorigRightArm) nodes.mixamorigRightArm.rotation.set(-1.0, 0, -0.4);
 
-        // Grab Handlebars - Right Arm
-        if (nodes.mixamorigRightArm) {
-            nodes.mixamorigRightArm.rotation.set(1.4, 0.4, -0.5);
-        }
-        if (nodes.mixamorigRightForeArm) {
-            nodes.mixamorigRightForeArm.rotation.set(-0.3, 0, -0.4);
-        }
-        if (nodes.mixamorigRightHand) nodes.mixamorigRightHand.rotation.set(-0.2, 0.2, 0);
+        // Bend elbows slightly
+        if (nodes.mixamorigLeftForeArm) nodes.mixamorigLeftForeArm.rotation.set(0, 0, -0.2);
+        if (nodes.mixamorigRightForeArm) nodes.mixamorigRightForeArm.rotation.set(0, 0, 0.2);
+
+        // Rotate wrists to grip
+        if (nodes.mixamorigLeftHand) nodes.mixamorigLeftHand.rotation.set(0.5, 0, 0);
+        if (nodes.mixamorigRightHand) nodes.mixamorigRightHand.rotation.set(0.5, 0, 0);
 
         // --- Procedurally animate legs based on pedal crank angle ---
         const crankR = 0.25; 
-        
-        // Left Leg IK approx
-        // Reverse pedalAngle to fix backward pedaling appearance
         const leftAng = -pedalAngle.current - Math.PI / 4;
         const lX = Math.cos(leftAng);
         const lY = Math.sin(leftAng);
@@ -88,7 +82,6 @@ const RiderModel = ({ pedalAngle }) => {
         if (nodes.mixamorigLeftLeg) nodes.mixamorigLeftLeg.rotation.x = Math.PI / 3 - lX * 0.3 + lY * 0.2;
         if (nodes.mixamorigLeftFoot) nodes.mixamorigLeftFoot.rotation.x = -0.1;
 
-        // Right Leg IK approx (180 degrees offset)
         const rightAng = -pedalAngle.current - Math.PI / 4 + Math.PI;
         const rX = Math.cos(rightAng);
         const rY = Math.sin(rightAng);
@@ -99,7 +92,7 @@ const RiderModel = ({ pedalAngle }) => {
     });
 
     // Position rider over seat and scale bigger relative to the adjusted 0.7x cycle scale
-    return <primitive object={scene} position={[-0.3, 0.08, 0]} scale={1.25} />;
+    return <primitive object={scene} position={[-0.3, 0.08, 0]} scale={1.25} dispose={null} dispose={null} />;
 };
 
 // Preload to ensure Xbot is cached
@@ -142,13 +135,13 @@ const BikeGenerator = ({ force, velocity, isGenerating }) => {
 
         if (lightMaterialRef.current) {
             lightMaterialRef.current.emissiveIntensity = visualIntensity.current;
-            lightMaterialRef.current.emissive = new THREE.Color(
+            lightMaterialRef.current.emissive.set(
                 visualIntensity.current > 5 ? 0xffffff : 0xffaa00
             );
         }
         if (pointLightRef.current) {
             pointLightRef.current.intensity = visualIntensity.current * 4; // Make significantly brighter for the road
-            pointLightRef.current.color = new THREE.Color(
+            pointLightRef.current.color.set(
                 visualIntensity.current > 5 ? 0xffffff : 0xffaa00
             );
         }
@@ -488,8 +481,10 @@ export default function SimCyclist3DContainer() {
                     {/* Glow coming from the Moon */}
                     <directionalLight position={[-4, 8, -20]} intensity={1.5} color="#bfdbfe" castShadow />
 
-                    <BikeGenerator force={force} velocity={velocity} isGenerating={isGenerating} />
-                    <MovingEnvironment velocity={isGenerating ? velocity : 0} isGenerating={isGenerating} />
+                    <Suspense fallback={null}>
+                        <BikeGenerator force={force} velocity={velocity} isGenerating={isGenerating} />
+                        <MovingEnvironment velocity={isGenerating ? velocity : 0} isGenerating={isGenerating} />
+                    </Suspense>
 
                     <OrbitControls enablePan={false} maxPolarAngle={Math.PI / 2 - 0.05} minDistance={3} maxDistance={15} />
                 </Canvas>

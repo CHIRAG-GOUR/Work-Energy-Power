@@ -41,34 +41,69 @@ const Wickets = ({ isShattered, energy }) => {
     const stumpsRef = useRef([]);
     const bailsRef = useRef([]);
 
+    // Logic based on energy
+    const isVeryLow = energy <= 30;
+    const isLow = energy > 30 && energy <= 50;
+    const isMedium = energy > 50 && energy <= 75;
+    const isHigh = energy > 75;
+
     // We will animate the shatter manually on frame if isShattered changes
     useFrame((state, delta) => {
-        if (isShattered) {
-            // Animate flying away
-            const intensity = Math.max(1, energy / 20);
+        if (isShattered && !isVeryLow) {
+            // Animate flying away based on energy
             
-            if (stumpsRef.current[0]) {
-                stumpsRef.current[0].position.z += 8 * delta * intensity;
-                stumpsRef.current[0].position.y += 2 * delta * intensity;
-                stumpsRef.current[0].rotation.x -= 2 * delta;
-            }
-            if (stumpsRef.current[1]) {
-                stumpsRef.current[1].position.z += 10 * delta * intensity;
-                stumpsRef.current[1].position.x -= 3 * delta * intensity;
-                stumpsRef.current[1].rotation.z += 2 * delta;
-            }
-            if (stumpsRef.current[2]) {
-                stumpsRef.current[2].position.z += 9 * delta * intensity;
-                stumpsRef.current[2].position.x += 3 * delta * intensity;
-                stumpsRef.current[2].rotation.x -= 3 * delta;
-            }
-            bailsRef.current.forEach(bail => {
-                if (bail) {
-                    bail.position.y += 8 * delta * intensity;
-                    bail.position.z += 5 * delta;
-                    bail.rotation.y += 5 * delta;
+            if (isLow) {
+                // 2 bails fall, 1 stump tilts back
+                if (stumpsRef.current[1]) {
+                    stumpsRef.current[1].rotation.x = THREE.MathUtils.lerp(stumpsRef.current[1].rotation.x, -Math.PI / 4, 5 * delta);
                 }
-            });
+                bailsRef.current.forEach(bail => {
+                    if (bail) {
+                        bail.position.y = THREE.MathUtils.lerp(bail.position.y, 0.1, 5 * delta);
+                        bail.position.z = THREE.MathUtils.lerp(bail.position.z, 0.5, 5 * delta);
+                    }
+                });
+            } else if (isMedium) {
+                // 1 stump falls out, bails fly
+                const intensity = 1.5;
+                if (stumpsRef.current[1]) {
+                    stumpsRef.current[1].position.z += 8 * delta * intensity;
+                    stumpsRef.current[1].position.y += 2 * delta * intensity;
+                    stumpsRef.current[1].rotation.x -= 3 * delta;
+                }
+                bailsRef.current.forEach(bail => {
+                    if (bail) {
+                        bail.position.y += 6 * delta * intensity;
+                        bail.position.z += 4 * delta * intensity;
+                        bail.rotation.y += 4 * delta;
+                    }
+                });
+            } else if (isHigh) {
+                // High speed, current behavior
+                const intensity = Math.max(1, energy / 20);
+                if (stumpsRef.current[0]) {
+                    stumpsRef.current[0].position.z += 8 * delta * intensity;
+                    stumpsRef.current[0].position.y += 2 * delta * intensity;
+                    stumpsRef.current[0].rotation.x -= 2 * delta;
+                }
+                if (stumpsRef.current[1]) {
+                    stumpsRef.current[1].position.z += 10 * delta * intensity;
+                    stumpsRef.current[1].position.x -= 3 * delta * intensity;
+                    stumpsRef.current[1].rotation.z += 2 * delta;
+                }
+                if (stumpsRef.current[2]) {
+                    stumpsRef.current[2].position.z += 9 * delta * intensity;
+                    stumpsRef.current[2].position.x += 3 * delta * intensity;
+                    stumpsRef.current[2].rotation.x -= 3 * delta;
+                }
+                bailsRef.current.forEach(bail => {
+                    if (bail) {
+                        bail.position.y += 8 * delta * intensity;
+                        bail.position.z += 5 * delta;
+                        bail.rotation.y += 5 * delta;
+                    }
+                });
+            }
         } else {
             // Reset positions
             stumpsRef.current.forEach((stump, i) => {
@@ -114,25 +149,45 @@ const Ball = ({ isBowling, energy, setIsShattered, hasShattered }) => {
     const startPos = new THREE.Vector3(0.5, 1.8, -4);
     const endPos = new THREE.Vector3(0, 0.5, 8); // At the wickets
 
+    // Calculate reach factor
+    const isVeryLow = energy <= 30;
+
     useFrame((state, delta) => {
         if (!ballRef.current) return;
         
         if (isBowling) {
             // Move ball forward
             const speed = energy * 0.3; // Map 0-100 to speed
-            ballRef.current.position.z += speed * delta;
-            ballRef.current.position.y = THREE.MathUtils.lerp(1.8, 0.1, (ballRef.current.position.z + 4) / 12); // Bounce effect approx
             
-            // Spin ball
-            ballRef.current.rotation.x += speed * delta;
+            // If very low, max Z is before wickets
+            const maxZ = isVeryLow ? 5 : 20;
+
+            if (ballRef.current.position.z < maxZ) {
+                ballRef.current.position.z += speed * delta;
+                
+                // Gravity / bounce effect
+                const progressToBounce = (ballRef.current.position.z + 4) / 8; // Bounce around z=4
+                if (progressToBounce < 1) {
+                    ballRef.current.position.y = THREE.MathUtils.lerp(1.8, 0.1, progressToBounce);
+                } else {
+                    // After bounce
+                    if (isVeryLow) {
+                        // Rolls on ground
+                        ballRef.current.position.y = 0.15;
+                    } else {
+                        // Bounces up slightly towards stumps
+                        ballRef.current.position.y = THREE.MathUtils.lerp(0.1, 0.6, (progressToBounce - 1) * 2);
+                    }
+                }
+                
+                // Spin ball
+                ballRef.current.rotation.x += speed * delta;
+            }
 
             // Collision check
-            if (ballRef.current.position.z >= endPos.z && !hasShattered) {
+            if (ballRef.current.position.z >= endPos.z && !hasShattered && !isVeryLow) {
                 // Impact!
                 setIsShattered(true);
-            }
-            if (ballRef.current.position.z > 20) {
-                // Keep rolling away but don't reset until user clicks
             }
         } else {
             // Reset ball

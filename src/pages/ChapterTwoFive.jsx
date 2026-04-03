@@ -1,5 +1,5 @@
 import React from 'react';
-import SimSkatepark3D from '../components/SimSkatepark3D';
+import CustomVideoPlayer from '../components/CustomVideoPlayer';
 
 export default function ChapterTwoFive() {
     return (
@@ -28,12 +28,28 @@ export default function ChapterTwoFive() {
                     </div>
                 </article>
 
-                <article className="glass-card fade-in" style={{ padding: '2rem', animationDelay: '0.3s', background: '#f8fafc', border: '1px solid #e2e8f0' }}>
-                    <h2 style={{ color: '#0369a1', borderBottom: '2px solid #bae6fd', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>Experiential Activity: The Skatepark Half-Pipe (3D)</h2>
-                    <p style={{ fontSize: '1.1rem', color: '#475569' }}>Watch the skater go back and forth on the half-pipe. Pay close attention to the energy bar charts. As Potential Energy (PE) decreases, Kinetic Energy (KE) increases, but the Total Energy never changes!</p>
+                <article className="glass-card fade-in" style={{ padding: '2rem', animationDelay: '0.25s', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '24px' }}>
+                    <h2 style={{ color: '#15803d', borderBottom: '2px solid #bbf7d0', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>Conservation of Energy in Action</h2>
+                    <p style={{ fontSize: '1.1rem', color: '#475569', marginBottom: '1.5rem' }}>Watch this animated explanation to understand exactly how energy transforms from one state to another.</p>
+                    <div style={{ width: '100%', maxWidth: '900px', margin: '0 auto', borderRadius: '1rem', overflow: 'hidden', border: '4px solid white', boxShadow: '0 10px 25px rgba(21, 128, 61, 0.2)' }}>
+                        <CustomVideoPlayer src="/videos/PWNs7i4rEWA.mp4" title="Conservation of Energy" />
+                    </div>
+                </article>
 
-                    <div className="simulation-container" style={{ margin: '2rem 0' }}>
-                        <SimSkatepark3D />
+                <article className="glass-card fade-in" style={{ padding: '2rem', animationDelay: '0.3s', background: '#f8fafc', border: '1px solid #e2e8f0' }}>
+                    <h2 style={{ color: '#0369a1', borderBottom: '2px solid #bae6fd', paddingBottom: '0.5rem', marginBottom: '1.5rem' }}>Experiential Activity: The Skatepark Half-Pipe (PhET)</h2>
+                    <p style={{ fontSize: '1.1rem', color: '#475569', marginBottom: '1.5rem' }}>Watch the skater go back and forth on the half-pipe. Pay close attention to the energy bar charts. As Potential Energy (PE) decreases, Kinetic Energy (KE) increases, but the Total Energy never changes!</p>
+
+                    <div className="simulation-container" style={{ margin: '2rem 0', height: '650px', background: 'white', borderRadius: '1.5rem', overflow: 'hidden', border: '4px solid #0ea5e9' }}>
+                        <iframe 
+                            src="https://phet.colorado.edu/sims/html/energy-skate-park/latest/energy-skate-park_en.html"
+                            width="100%" 
+                            height="100%" 
+                            scrolling="no" 
+                            allowFullScreen 
+                            style={{ border: 'none' }}
+                            title="PhET Energy Skate Park"
+                        ></iframe>
                     </div>
                 </article>
             </div>

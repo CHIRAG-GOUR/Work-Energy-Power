@@ -62,11 +62,12 @@ const ChapterTwoSeven = () => {
           
           <div className="glass-card" style={{ background: 'white' }}>
              <h3 style={{ color: '#334155', fontSize: '1.2rem', marginBottom: '1rem', borderBottom: '2px solid #e2e8f0', paddingBottom: '0.5rem' }}>Example 1: Climbing Girls</h3>
-             <p style={{ color: '#475569', fontSize: '0.95rem', marginBottom: '1rem' }}>Two girls (A & B), each weighing 400 N climb a rope 8 m high. Girl A takes 20s, Girl B takes 50s.</p>
+             <p style={{ color: '#475569', fontSize: '0.95rem', marginBottom: '1rem' }}>Two girls (A & B), each with a mass of 40 kg, climb a rope 8 m high. Girl A takes 20s, Girl B takes 50s. (Assume g = 10 m/s²)</p>
              <div style={{ background: '#f8fafc', padding: '1rem', borderRadius: '0.5rem', fontSize: '0.9rem', color: '#1e293b' }}>
-               <strong>Work Done (both)</strong> = mgh = 400 × 8 = 3200 J<br/><br/>
-               <strong>Girl A Power</strong> = 3200 / 20 = 160 W<br/>
-               <strong>Girl B Power</strong> = 3200 / 50 = 64 W
+               <strong>Weight (Force)</strong> = m × g = 40 kg × 10 m/s² = 400 N<br/>
+               <strong>Work Done (both)</strong> = Force × h = 400 N × 8 m = 3200 J<br/><br/>
+               <strong>Girl A Power</strong> = 3200 J / 20 s = 160 W<br/>
+               <strong>Girl B Power</strong> = 3200 J / 50 s = 64 W
              </div>
           </div>
 
